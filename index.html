@@ -53,65 +53,48 @@
     </style>
 
     <script>
-      const indicatorDots = [];
-      const velocities = [];
-      const updateRate = 1 / 60;
-
-      // 초기 dot을 배열에 추가
-      window.addEventListener("DOMContentLoaded", () => {
-        const initialDot = document.querySelector(".indicatorDot");
-        indicatorDots.push(initialDot);
-        velocities.push({ vx: 0, vy: 0 });
-      });
+      var px = 50; // Position x and y
+      var py = 50;
+      var vx = 0.0; // Velocity x and y
+      var vy = 0.0;
+      var updateRate = 1 / 60; // Sensor refresh rate
 
       function getAccel() {
         DeviceMotionEvent.requestPermission().then((response) => {
-          if (response === "granted") {
+          if (response == "granted") {
+            const dot = document.getElementsByClassName("indicatorDot")[0];
+            const spot = document.getElementsByClassName("spotDot")[0];
+
             window.addEventListener("deviceorientation", (event) => {
-              const frontToBack = event.beta;
-              const leftToRight = event.gamma;
+              const rotation_degrees = event.alpha;
+              const frontToBack_degrees = event.beta;
+              const leftToRight_degrees = event.gamma;
 
-              indicatorDots.forEach((dot, i) => {
-                const velocity = velocities[i];
-                velocity.vx += leftToRight * updateRate * 2;
-                velocity.vy += frontToBack * updateRate;
+              vx = vx + leftToRight_degrees * updateRate * 2;
+              vy = vy + frontToBack_degrees * updateRate;
 
-                const rect = dot.getBoundingClientRect();
-                let px = rect.left + velocity.vx * 0.5;
-                let py = rect.top + velocity.vy * 0.5;
+              px = px + vx * 0.5;
+              if (px > 98 || px < 0) {
+                px = Math.max(0, Math.min(98, px));
+                vx = 0;
+              }
 
-                px = Math.max(0, Math.min(window.innerWidth - 50, px));
-                py = Math.max(0, Math.min(window.innerHeight - 50, py));
+              py = py + vy * 0.5;
+              if (py > 98 || py < 0) {
+                py = Math.max(0, Math.min(98, py));
+                vy = 0;
+              }
 
-                if (px <= 0 || px >= window.innerWidth - 50) velocity.vx = 0;
-                if (py <= 0 || py >= window.innerHeight - 50) velocity.vy = 0;
+              dot.style.left = px + "%";
+              dot.style.top = py + "%";
 
-                dot.style.left = px + "px";
-                dot.style.top = py + "px";
-
-                checkCollision(dot);
-              });
+              checkCollision(dot, spot);
             });
           }
         });
       }
 
-      // 터치로 dot 추가
-      document.addEventListener("touchstart", function (event) {
-        const touch = event.touches[0];
-
-        const newDot = document.createElement("div");
-        newDot.className = "indicatorDot";
-        newDot.style.left = touch.clientX - 25 + "px";
-        newDot.style.top = touch.clientY - 25 + "px";
-
-        document.body.appendChild(newDot);
-        indicatorDots.push(newDot);
-        velocities.push({ vx: 0, vy: 0 });
-      });
-
-      function checkCollision(dot) {
-        const spot = document.querySelector(".spotDot");
+      function checkCollision(dot, spot) {
         const dotRect = dot.getBoundingClientRect();
         const spotRect = spot.getBoundingClientRect();
 
@@ -131,7 +114,7 @@
     <button id="accelPermsButton" style="height: 50px" onclick="getAccel()">
       <h1>Get Accelerometer Permissions</h1>
     </button>
-    <!-- <div class="indicatorDot" style="left: 30%; top: 30%"></div> -->
+    <div class="indicatorDot" style="left: 30%; top: 30%"></div>
     <div class="spotDot" style="left: 48.5vw; top: 52vh"></div>
     <div class="title">의식저널</div>
 
