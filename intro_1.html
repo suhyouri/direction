@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Dot Interaction Page</title>
     <link
       rel="stylesheet"
       as="style"
@@ -12,23 +12,125 @@
     />
     <style>
       body {
-        padding: 5%;
         margin: 0;
-        font-family: "Apple SD Gothic Neo", sans-serif;
+        padding: 5%;
+        height: 100vh;
+        font-family: "Pretendard Variable", "Apple SD Gothic Neo", sans-serif;
         font-weight: 300;
         font-size: 6vw;
         line-height: 140%;
-        align-items: center;
+        background: #f5f5f5;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .dot {
+        width: 15px;
+        height: 15px;
+        background-color: #000;
+        border-radius: 50%;
+        position: absolute;
+        transition: all 0.3s ease;
+        z-index: 1;
+      }
+
+      .enlarged {
+        width: 35px !important;
+        height: 35px !important;
+      }
+
+      .expired {
+        background-color: gray !important;
+      }
+
+      .text-content {
+        position: relative;
+        z-index: 2;
       }
     </style>
   </head>
   <body>
-    발바닥이 닿는 지면을 느껴봅니다. <br />
-    <br />
-    엄지발가락을 시작으로<br />
-    새끼발가락까지 <br />
-    도,레,미,파,솔 연주를 해봅니다. <br />
-    <br />
-    반대방향으로도 진행해봅니다.
+    <div class="text-content">
+      발바닥이 닿는 지면을 느껴봅니다. <br /><br />
+      엄지발가락을 시작으로<br />
+      새끼발가락까지 <br />
+      도,레,미,파,솔 연주를 해봅니다. <br /><br />
+      반대방향으로도 진행해봅니다.
+    </div>
+
+    <script>
+      const totalDots = 10;
+      let enlargedStates = new Array(totalDots).fill(false); // 한 번이라도 enlarged 되었는지 추적
+
+      const checkAllDots = () => {
+        const allTouched = enlargedStates.every((state) => state);
+        if (allTouched) {
+          window.location.href = "intro_2.html";
+        }
+      };
+
+      const createDot = (x, y, index) => {
+        const dot = document.createElement("div");
+        dot.classList.add("dot");
+        dot.style.left = `${x}px`;
+        dot.style.top = `${y}px`;
+
+        // 30초 후 회색으로
+        const expireTimer = setTimeout(() => {
+          if (!enlargedStates[index]) {
+            dot.classList.add("expired");
+          }
+        }, 10000);
+
+        const toggleSize = (e) => {
+          e.preventDefault();
+
+          if (dot.classList.contains("expired")) {
+            dot.classList.remove("expired");
+          }
+
+          const isEnlarged = dot.classList.contains("enlarged");
+          dot.classList.toggle("enlarged");
+
+          // enlarge 상태가 처음이면 기록 + 타이머 제거
+          if (!enlargedStates[index] && !isEnlarged) {
+            enlargedStates[index] = true;
+            clearTimeout(expireTimer);
+          }
+
+          checkAllDots();
+        };
+
+        const isTouchDevice = "ontouchstart" in window;
+        if (isTouchDevice) {
+          dot.addEventListener("touchstart", toggleSize, { passive: false });
+        } else {
+          dot.addEventListener("click", toggleSize);
+        }
+
+        document.body.appendChild(dot);
+      };
+
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+
+      let index = 0;
+
+      // 오른쪽 곡선
+      for (let i = 0; i < 5; i++, index++) {
+        const t = i / 4;
+        const x = vw * 0.4 + t * vw * 0.5;
+        const y = vh * 0.8 + Math.sin(t * Math.PI) * -50;
+        createDot(x, y, index);
+      }
+
+      // 왼쪽 곡선
+      for (let i = 0; i < 5; i++, index++) {
+        const t = i / 4;
+        const x = vw * 0.1 + t * vw * 0.5;
+        const y = vh * 0.6 + Math.sin(t * Math.PI) * -50;
+        createDot(x, y, index);
+      }
+    </script>
   </body>
 </html>
