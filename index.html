@@ -6,11 +6,48 @@
 
     <style>
       .indicatorDot {
-        width: 30px;
-        height: 30px;
-        background-color: #ffab56;
+        width: 50px;
+        height: 50px;
+        background-color: #ff0000;
         border-radius: 50%;
         position: fixed;
+      }
+
+      .spotDot {
+        width: 50px;
+        height: 50px;
+        background-color: #000000;
+        border-radius: 50%;
+        position: fixed;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Noto Sans KR", sans-serif;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        /* justify-content: space-between; */
+        /* align-items: center; */
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .title {
+        margin-top: 30vh;
+        margin-bottom: 50vh;
+        font-size: 3rem;
+        text-align: center;
+      }
+
+      .author {
+        font-size: 2rem;
+        text-align: center;
+        color: #333;
       }
     </style>
 
@@ -24,47 +61,69 @@
       function getAccel() {
         DeviceMotionEvent.requestPermission().then((response) => {
           if (response == "granted") {
-            // Add a listener to get smartphone orientation
-            // in the alpha-beta-gamma axes (units in degrees)
-            window.addEventListener("deviceorientation", (event) => {
-              // Expose each orientation angle in a more readable way
-              rotation_degrees = event.alpha;
-              frontToBack_degrees = event.beta;
-              leftToRight_degrees = event.gamma;
+            const dot = document.getElementsByClassName("indicatorDot")[0];
+            const spot = document.getElementsByClassName("spotDot")[0];
 
-              // Update velocity according to how tilted the phone is
-              // Since phones are narrower than they are long, double the increase to the x velocity
+            window.addEventListener("deviceorientation", (event) => {
+              const rotation_degrees = event.alpha;
+              const frontToBack_degrees = event.beta;
+              const leftToRight_degrees = event.gamma;
+
               vx = vx + leftToRight_degrees * updateRate * 2;
               vy = vy + frontToBack_degrees * updateRate;
 
-              // Update position and clip it to bounds
               px = px + vx * 0.5;
               if (px > 98 || px < 0) {
-                px = Math.max(0, Math.min(98, px)); // Clip px between 0-98
+                px = Math.max(0, Math.min(98, px));
                 vx = 0;
               }
 
               py = py + vy * 0.5;
               if (py > 98 || py < 0) {
-                py = Math.max(0, Math.min(98, py)); // Clip py between 0-98
+                py = Math.max(0, Math.min(98, py));
                 vy = 0;
               }
 
-              dot = document.getElementsByClassName("indicatorDot")[0];
-              dot.setAttribute(
-                "style",
-                "left:" + px + "%;" + "top:" + py + "%;"
-              );
+              dot.style.left = px + "%";
+              dot.style.top = py + "%";
+
+              checkCollision(dot, spot);
             });
           }
         });
       }
+
+      function checkCollision(dot, spot) {
+        const dotRect = dot.getBoundingClientRect();
+        const spotRect = spot.getBoundingClientRect();
+
+        const isColliding =
+          dotRect.left < spotRect.right &&
+          dotRect.right > spotRect.left &&
+          dotRect.top < spotRect.bottom &&
+          dotRect.bottom > spotRect.top;
+
+        if (isColliding) {
+          window.location.href = "intro_1.html";
+        }
+      }
     </script>
   </head>
-  <body style="background-color: lightblue">
+  <body style="background-color: beige">
     <button id="accelPermsButton" style="height: 50px" onclick="getAccel()">
       <h1>Get Accelerometer Permissions</h1>
     </button>
     <div class="indicatorDot" style="left: 30%; top: 30%"></div>
+    <div class="spotDot" style="left: 48.5vw; top: 52vh"></div>
+    <div class="title"><a href="journal.html">의식저널</a></div>
+
+    <div class="author">
+      <a
+        href="https://www.instagram.com/suhyouri"
+        target="_blank"
+        rel="noopener noreferrer"
+        >서유리</a
+      >
+    </div>
   </body>
 </html>
