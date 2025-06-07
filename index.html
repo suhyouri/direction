@@ -53,67 +53,69 @@
     </style>
 
     <script>
-      var px = 50; // Position x and y
-      var py = 50;
-      var vx = 0.0; // Velocity x and y
-      var vy = 0.0;
-      var updateRate = 1 / 60; // Sensor refresh rate
+      const indicatorDots = []; // 움직일 원들을 저장하는 배열
+      const velocities = []; // 각 원의 속도 저장 (vx, vy)
+      const updateRate = 1 / 60;
 
+      // 기존 버튼으로 permission 얻기
       function getAccel() {
         DeviceMotionEvent.requestPermission().then((response) => {
           if (response == "granted") {
-            const dot = document.getElementsByClassName("indicatorDot")[0];
-            const spot = document.getElementsByClassName("spotDot")[0];
-
             window.addEventListener("deviceorientation", (event) => {
-              const rotation_degrees = event.alpha;
-              const frontToBack_degrees = event.beta;
-              const leftToRight_degrees = event.gamma;
+              const frontToBack = event.beta;
+              const leftToRight = event.gamma;
 
-              vx = vx + leftToRight_degrees * updateRate * 2;
-              vy = vy + frontToBack_degrees * updateRate;
+              for (let i = 0; i < indicatorDots.length; i++) {
+                const dot = indicatorDots[i];
+                const velocity = velocities[i];
 
-              px = px + vx * 0.5;
-              if (px > 98 || px < 0) {
-                px = Math.max(0, Math.min(98, px));
-                vx = 0;
+                // 속도 업데이트
+                velocity.vx += leftToRight * updateRate * 2;
+                velocity.vy += frontToBack * updateRate;
+
+                // 현재 위치
+                let rect = dot.getBoundingClientRect();
+                let px = rect.left + velocity.vx * 0.5;
+                let py = rect.top + velocity.vy * 0.5;
+
+                // 화면 범위 제한
+                px = Math.max(0, Math.min(window.innerWidth - 50, px));
+                py = Math.max(0, Math.min(window.innerHeight - 50, py));
+
+                // 속도 초기화 (벽 충돌 시 반사 아님, 정지)
+                if (px <= 0 || px >= window.innerWidth - 50) velocity.vx = 0;
+                if (py <= 0 || py >= window.innerHeight - 50) velocity.vy = 0;
+
+                // 위치 적용
+                dot.style.left = px + "px";
+                dot.style.top = py + "px";
+
+                // spot과 충돌 체크
+                const spot = document.getElementsByClassName("spotDot")[0];
+                checkCollision(dot, spot);
               }
-
-              py = py + vy * 0.5;
-              if (py > 98 || py < 0) {
-                py = Math.max(0, Math.min(98, py));
-                vy = 0;
-              }
-
-              dot.style.left = px + "%";
-              dot.style.top = py + "%";
-
-              checkCollision(dot, spot);
             });
           }
         });
       }
-      // 기존 코드 위에 이 부분 추가
-      document.addEventListener("click", function (event) {
-        const newDot = document.createElement("div");
-        newDot.className = "indicatorDot";
-        newDot.style.left = event.clientX - 25 + "px"; // 중앙 정렬
-        newDot.style.top = event.clientY - 25 + "px";
-        document.body.appendChild(newDot);
-      });
 
+      // 새 indicatorDot 생성 함수 (터치 이벤트용)
       document.addEventListener("touchstart", function (event) {
-        const touch = event.touches[0]; // 첫 번째 터치 지점 가져오기
+        const touch = event.touches[0];
 
         const newDot = document.createElement("div");
         newDot.className = "indicatorDot";
-
-        // 터치 지점을 기준으로 정중앙에 원이 위치하도록 25px 보정
         newDot.style.left = touch.clientX - 25 + "px";
         newDot.style.top = touch.clientY - 25 + "px";
 
         document.body.appendChild(newDot);
+
+        // 배열에 추가
+        indicatorDots.push(newDot);
+        velocities.push({ vx: 0, vy: 0 });
       });
+
+      // 충돌 감지
       function checkCollision(dot, spot) {
         const dotRect = dot.getBoundingClientRect();
         const spotRect = spot.getBoundingClientRect();
