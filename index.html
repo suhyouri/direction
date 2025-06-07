@@ -53,53 +53,50 @@
     </style>
 
     <script>
-      const indicatorDots = []; // 움직일 원들을 저장하는 배열
-      const velocities = []; // 각 원의 속도 저장 (vx, vy)
+      const indicatorDots = [];
+      const velocities = [];
       const updateRate = 1 / 60;
 
-      // 기존 버튼으로 permission 얻기
+      // 초기 dot을 배열에 추가
+      window.addEventListener("DOMContentLoaded", () => {
+        const initialDot = document.querySelector(".indicatorDot");
+        indicatorDots.push(initialDot);
+        velocities.push({ vx: 0, vy: 0 });
+      });
+
       function getAccel() {
         DeviceMotionEvent.requestPermission().then((response) => {
-          if (response == "granted") {
+          if (response === "granted") {
             window.addEventListener("deviceorientation", (event) => {
               const frontToBack = event.beta;
               const leftToRight = event.gamma;
 
-              for (let i = 0; i < indicatorDots.length; i++) {
-                const dot = indicatorDots[i];
+              indicatorDots.forEach((dot, i) => {
                 const velocity = velocities[i];
-
-                // 속도 업데이트
                 velocity.vx += leftToRight * updateRate * 2;
                 velocity.vy += frontToBack * updateRate;
 
-                // 현재 위치
-                let rect = dot.getBoundingClientRect();
+                const rect = dot.getBoundingClientRect();
                 let px = rect.left + velocity.vx * 0.5;
                 let py = rect.top + velocity.vy * 0.5;
 
-                // 화면 범위 제한
                 px = Math.max(0, Math.min(window.innerWidth - 50, px));
                 py = Math.max(0, Math.min(window.innerHeight - 50, py));
 
-                // 속도 초기화 (벽 충돌 시 반사 아님, 정지)
                 if (px <= 0 || px >= window.innerWidth - 50) velocity.vx = 0;
                 if (py <= 0 || py >= window.innerHeight - 50) velocity.vy = 0;
 
-                // 위치 적용
                 dot.style.left = px + "px";
                 dot.style.top = py + "px";
 
-                // spot과 충돌 체크
-                const spot = document.getElementsByClassName("spotDot")[0];
-                checkCollision(dot, spot);
-              }
+                checkCollision(dot);
+              });
             });
           }
         });
       }
 
-      // 새 indicatorDot 생성 함수 (터치 이벤트용)
+      // 터치로 dot 추가
       document.addEventListener("touchstart", function (event) {
         const touch = event.touches[0];
 
@@ -109,14 +106,12 @@
         newDot.style.top = touch.clientY - 25 + "px";
 
         document.body.appendChild(newDot);
-
-        // 배열에 추가
         indicatorDots.push(newDot);
         velocities.push({ vx: 0, vy: 0 });
       });
 
-      // 충돌 감지
-      function checkCollision(dot, spot) {
+      function checkCollision(dot) {
+        const spot = document.querySelector(".spotDot");
         const dotRect = dot.getBoundingClientRect();
         const spotRect = spot.getBoundingClientRect();
 
