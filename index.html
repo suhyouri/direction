@@ -102,6 +102,18 @@
         document.body.appendChild(newDot);
       });
 
+      document.addEventListener("touchstart", function (event) {
+        const touch = event.touches[0]; // 첫 번째 터치 지점 가져오기
+
+        const newDot = document.createElement("div");
+        newDot.className = "indicatorDot";
+
+        // 터치 지점을 기준으로 정중앙에 원이 위치하도록 25px 보정
+        newDot.style.left = touch.clientX - 25 + "px";
+        newDot.style.top = touch.clientY - 25 + "px";
+
+        document.body.appendChild(newDot);
+      });
       function checkCollision(dot, spot) {
         const dotRect = dot.getBoundingClientRect();
         const spotRect = spot.getBoundingClientRect();
