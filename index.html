@@ -6,7 +6,7 @@
 
     <style>
       .indicatorDot {
-        width: 200px;
+        width: 200px; /* 50 */
         height: 200px;
         background-color: #ff0000;
         border-radius: 50%;
@@ -39,12 +39,13 @@
 
       .title {
         margin-top: 30vh;
-        margin-bottom: 50vh;
+
         font-size: 3rem;
         text-align: center;
       }
 
       .author {
+        margin-top: 30vh;
         font-size: 2rem;
         text-align: center;
         color: #333;
@@ -92,6 +93,14 @@
           }
         });
       }
+      // 기존 코드 위에 이 부분 추가
+      document.addEventListener("click", function (event) {
+        const newDot = document.createElement("div");
+        newDot.className = "indicatorDot";
+        newDot.style.left = event.clientX - 25 + "px"; // 중앙 정렬
+        newDot.style.top = event.clientY - 25 + "px";
+        document.body.appendChild(newDot);
+      });
 
       function checkCollision(dot, spot) {
         const dotRect = dot.getBoundingClientRect();
