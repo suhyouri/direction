@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drag & Bounce Emojis</title>
+    <style>
+      body {
+        margin: 0;
+        background: white;
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+        position: relative;
+        font-size: 18pt;
+        min-width: 500px;
+        font-family: "Noto Sans KR", sans-serif;
+      }
+
+      img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 0;
+      }
+
+      .emoji {
+        position: absolute;
+        font-size: 2rem;
+        user-select: none;
+        cursor: grab;
+        z-index: 2;
+        pointer-events: auto;
+      }
+
+      .target {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        border: 2px dashed #aaa;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      .target:hover {
+        border-color: #000;
+      }
+
+      .mobile-only-warning {
+        display: none;
+      }
+
+      @media screen and (min-width: 500px) {
+        .mobile-only-warning {
+          display: block;
+          position: fixed;
+          top: 40%;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: #ffcccc;
+          padding: 1rem 2rem;
+          font-size: 1.2rem;
+          border-radius: 10px;
+          z-index: 999;
+        }
+      }
+
+      .top-ui {
+        display: flex;
+        justify-content: space-between;
+        width: 89vw;
+        position: absolute;
+        top: 1rem;
+        /* left: 0;
+        right: 0; */
+        padding: 0 1rem;
+        font-size: 1.2rem;
+        z-index: 10;
+        color: black;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 20px;
+      }
+
+      .bottom-guide {
+        position: absolute;
+        bottom: 2rem;
+        width: 100%;
+        text-align: center;
+        font-size: 1.2rem;
+        line-height: 1.5;
+        z-index: 10;
+        font-weight: 500;
+      }
+
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none; /* 처음엔 숨김 */
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 400px;
+        text-align: center;
+        font-size: 1rem;
+        position: relative;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .close-button {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.7rem;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="file.svg" alt="asterisk" />
+    <!-- UI 상단 텍스트 버튼들 -->
+    <div class="top-ui">
+      <div class="left" onclick="location.href='index.html'">⏪ 처음으로</div>
+      <div class="right" onclick="openModal()">🧑🏻‍💻 만든이</div>
+    </div>
+
+    <!-- 🟨 이미지 및 이모지 등 기존 요소들 -->
+    <img src="file.svg" alt="asterisk" />
+    <!-- ...이모지들 및 타겟들 생략... -->
+
+    <!-- 🦶 하단 안내 텍스트 -->
+    <div class="bottom-guide">드래그 & 드롭하여<br />이동하세요</div>
+
+    <!-- 👣 움직이는 이모지들 -->
+    <div class="emoji">👀</div>
+    <div class="emoji">👋</div>
+    <div class="emoji">🦶</div>
+    <div class="emoji">👋</div>
+    <div class="emoji">🦶</div>
+    <div class="emoji">👁️</div>
+    <div class="emoji">👄</div>
+    <div class="emoji">🫀</div>
+    <div class="emoji">🦵</div>
+    <div class="emoji">💪🏼</div>
+    <div class="emoji">🧠</div>
+
+    <!-- 🎯 별 다섯 팔 끝점 타겟 (각도 지정 가능) -->
+    <div class="target" data-url="page1.html" data-angle="-90"></div>
+    <div class="target" data-url="page2.html" data-angle="0"></div>
+    <div class="target" data-url="page3.html" data-angle="72"></div>
+    <div class="target" data-url="page4.html" data-angle="144"></div>
+    <div class="target" data-url="page5.html" data-angle="216"></div>
+
+    <div class="mobile-only-warning">⚠️ 모바일 기기에서 이용해주세요</div>
+
+    <!-- 📦 모달 (숨겨져 있음) -->
+    <div id="infoModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" onclick="closeModal()">×</button>
+        <h2>안내</h2>
+        <p>
+          이 페이지는 2025년 1학기 무용과학세미나 <br />의식저널을 위한 웹페이지
+          입니다. <br /><br />
+          <p style="text-align: left; font-size: 1.2rem;">
+          ✅ 각자의 습을 발견하기 <br />
+          ✅ 나에게서 변하지 않는것? 충동, 호기심, 미지의 세계 탐구 <br />✅
+          변했으면 하는 것? 뻣뻣한 몸 <br />✅ 내가 궁금한 지점? 신체부상이
+          심리적인 문제일 수도 있을까? 신경가소성, 통증의 위계
+          <br />
+        </p>
+        <br />
+          서유리 제작
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const emojis = document.querySelectorAll(".emoji");
+      const targets = document.querySelectorAll(".target");
+      const svg = document.querySelector("img");
+      const directions = [];
+
+      // 🎯 target 위치 계산
+      function updateTargetPositions() {
+        const svgRect = svg.getBoundingClientRect();
+        const cx = svgRect.left + svgRect.width / 2;
+        const cy = svgRect.top + svgRect.height / 2;
+        const r = svgRect.width * 0.4;
+
+        targets.forEach((target) => {
+          const angleDeg = parseFloat(target.getAttribute("data-angle")) || 0;
+          const angle = angleDeg * (Math.PI / 180);
+          const x = cx + r * Math.cos(angle) - 20;
+          const y = cy + r * Math.sin(angle) - 20;
+          target.style.left = `${x}px`;
+          target.style.top = `${y}px`;
+        });
+      }
+
+      window.addEventListener("resize", updateTargetPositions);
+      window.addEventListener("load", () => {
+        updateTargetPositions();
+
+        // 🌀 초기 이모지 위치와 방향 설정
+        emojis.forEach((el, i) => {
+          const size = 80;
+          const x = Math.random() * (window.innerWidth - size);
+          const y = Math.random() * (window.innerHeight - size);
+          el.style.left = `${x}px`;
+          el.style.top = `${y}px`;
+
+          directions.push({
+            dx: (Math.random() * 2 + 0.5) * (Math.random() < 0.5 ? 1 : -1),
+            dy: (Math.random() * 2 + 0.5) * (Math.random() < 0.5 ? 1 : -1),
+          });
+        });
+
+        moveEmojis();
+      });
+
+      // 🎈 튕기기 애니메이션
+      function moveEmojis() {
+        emojis.forEach((el, i) => {
+          if (el.dataset.dragging === "true") return;
+
+          const rect = el.getBoundingClientRect();
+          const size = rect.width;
+          let x = rect.left + directions[i].dx;
+          let y = rect.top + directions[i].dy;
+
+          if (x <= 0 || x + size >= window.innerWidth) {
+            directions[i].dx *= -1;
+            x = Math.max(0, Math.min(x, window.innerWidth - size));
+          }
+          if (y <= 0 || y + size >= window.innerHeight) {
+            directions[i].dy *= -1;
+            y = Math.max(0, Math.min(y, window.innerHeight - size));
+          }
+
+          el.style.left = `${x}px`;
+          el.style.top = `${y}px`;
+        });
+
+        requestAnimationFrame(moveEmojis);
+      }
+
+      // 🖱️ & 📱 드래그 기능
+      emojis.forEach((emoji) => {
+        let offsetX = 0,
+          offsetY = 0,
+          isDragging = false;
+
+        const startDrag = (x, y) => {
+          isDragging = true;
+          const rect = emoji.getBoundingClientRect();
+          offsetX = x - rect.left;
+          offsetY = y - rect.top;
+          emoji.dataset.dragging = "true";
+        };
+
+        const moveDrag = (x, y) => {
+          if (!isDragging) return;
+          emoji.style.left = `${x - offsetX}px`;
+          emoji.style.top = `${y - offsetY}px`;
+        };
+
+        const endDrag = () => {
+          if (!isDragging) return;
+          isDragging = false;
+          emoji.removeAttribute("data-dragging");
+          checkOverlap(emoji);
+        };
+
+        // mouse
+        emoji.addEventListener("mousedown", (e) =>
+          startDrag(e.clientX, e.clientY)
+        );
+        document.addEventListener("mousemove", (e) =>
+          moveDrag(e.clientX, e.clientY)
+        );
+        document.addEventListener("mouseup", endDrag);
+
+        // touch
+        emoji.addEventListener("touchstart", (e) => {
+          const t = e.touches[0];
+          startDrag(t.clientX, t.clientY);
+        });
+        document.addEventListener("touchmove", (e) => {
+          const t = e.touches[0];
+          moveDrag(t.clientX, t.clientY);
+        });
+        document.addEventListener("touchend", endDrag);
+      });
+
+      // 📦 타겟 충돌 체크
+      function checkOverlap(emoji) {
+        const emojiRect = emoji.getBoundingClientRect();
+        targets.forEach((target) => {
+          const targetRect = target.getBoundingClientRect();
+          const isOverlap =
+            emojiRect.left < targetRect.right &&
+            emojiRect.right > targetRect.left &&
+            emojiRect.top < targetRect.bottom &&
+            emojiRect.bottom > targetRect.top;
+
+          if (isOverlap) {
+            const url = target.getAttribute("data-url");
+            window.location.href = url;
+          }
+        });
+      }
+
+      function openModal() {
+        document.getElementById("infoModal").style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("infoModal").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

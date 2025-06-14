@@ -85,6 +85,7 @@
       }
 
       .next-button {
+        display: none; /* 처음엔 안 보이게 */
         position: fixed;
         bottom: 8%;
         right: 5%;
@@ -191,6 +192,76 @@
         document.getElementById("topBoxR"),
         document.getElementById("circleR"),
         document.getElementById("dragBoxR")
+      );
+
+      let touchedL = false;
+      let touchedR = false;
+
+      function checkAndShowButton() {
+        if (touchedL && touchedR) {
+          document.querySelector(".next-button").style.display = "block";
+        }
+      }
+
+      function setupDrag(topBox, circle, dragBox, side) {
+        let startY = 0;
+
+        dragBox.addEventListener(
+          "touchstart",
+          (e) => {
+            startY = e.touches[0].clientY;
+
+            // ✅ 처음 터치되었을 때 상태 업데이트
+            if (side === "left") touchedL = true;
+            if (side === "right") touchedR = true;
+            checkAndShowButton();
+          },
+          { passive: false }
+        );
+
+        dragBox.addEventListener(
+          "touchmove",
+          (e) => {
+            e.preventDefault();
+            const deltaY = e.touches[0].clientY - startY;
+
+            dragBox.style.transform = `translateY(${deltaY}px)`;
+            circle.style.transform = `translateY(${deltaY * 0.6}px)`;
+            topBox.style.transform = `translateY(${deltaY * 0.3}px)`;
+          },
+          { passive: false }
+        );
+
+        dragBox.addEventListener("touchend", () => {
+          dragBox.style.transition =
+            circle.style.transition =
+            topBox.style.transition =
+              "transform 0.5s ease";
+          dragBox.style.transform =
+            circle.style.transform =
+            topBox.style.transform =
+              "translateY(0)";
+          setTimeout(() => {
+            dragBox.style.transition =
+              circle.style.transition =
+              topBox.style.transition =
+                "";
+          }, 500);
+        });
+      }
+
+      setupDrag(
+        document.getElementById("topBoxL"),
+        document.getElementById("circleL"),
+        document.getElementById("dragBoxL"),
+        "left"
+      );
+
+      setupDrag(
+        document.getElementById("topBoxR"),
+        document.getElementById("circleR"),
+        document.getElementById("dragBoxR"),
+        "right"
       );
     </script>
     <a href="intro_3.html" class="next-button" aria-label="다음으로 이동">›</a>
