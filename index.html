@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Accelerometer Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>⛈️의식저널☁️</title>
 
     <style>
       .indicatorDot {
@@ -18,7 +19,10 @@
         height: 50px;
         background-color: #000000;
         border-radius: 50%;
-        position: fixed;
+        position: relative;
+        top: 50px;
+        text-align: center;
+        margin: 0 auto;
       }
 
       body {
@@ -28,8 +32,8 @@
         height: 100vh;
         display: flex;
         flex-direction: column;
-        /* justify-content: space-between; */
-        /* align-items: center; */
+        justify-content: last baseline;
+        align-items: center;
       }
 
       a {
@@ -37,18 +41,127 @@
         color: inherit;
       }
 
+      div {
+        text-align: center;
+      }
+
       .title {
         margin-top: 30vh;
-
         font-size: 3rem;
         text-align: center;
       }
 
       .author {
-        margin-top: 30vh;
+        margin-top: 10rem;
         font-size: 2rem;
         text-align: center;
         color: #333;
+      }
+
+      .button {
+        padding-top: 30px;
+        display: flex;
+      }
+      #accelPermsButton {
+        position: relative;
+        /* bottom: 30%; */
+        left: 50%;
+        font-weight: 500;
+        transform: translateX(-50%);
+        width: 200px;
+        height: 70px;
+        background-color: white;
+        border: 2px solid rgb(0, 0, 0);
+        border-radius: 35px; /* 타원형 모양 */
+        color: rgb(0, 0, 0);
+        font-size: 1.2rem;
+        cursor: pointer;
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      /* 기본: PC 화면에서 보임 */
+      .mobile-only-warning {
+        display: none;
+      }
+
+      /* 모바일 전용 */
+      @media (max-width: 480px) {
+        .indicatorDot {
+          width: 30px; /* 50 */
+          height: 30px;
+          background-color: #ff0000;
+          border-radius: 50%;
+          position: fixed;
+        }
+
+        .spotDot {
+          width: 30px;
+          height: 30px;
+          background-color: #000000;
+          border-radius: 50%;
+          position: relative;
+          top: 5rem;
+          text-align: center;
+          margin: 0 auto;
+        }
+
+        .title {
+          margin-top: 24vh;
+          font-size: 3rem;
+          text-align: center;
+        }
+
+        .author {
+          margin-top: 10rem;
+          font-size: 2rem;
+          text-align: center;
+          color: #333;
+        }
+
+        .button {
+          padding-top: 5rem;
+        }
+
+        #accelPermsButton {
+          position: relative;
+          /* bottom: 30%; */
+          left: 50%;
+          font-weight: 500;
+          transform: translateX(-50%);
+          width: 150px;
+          height: 50px;
+          background-color: white;
+          border: 2px solid rgb(0, 0, 0);
+          border-radius: 35px; /* 타원형 모양 */
+          color: rgb(0, 0, 0);
+          font-size: 1rem;
+          cursor: pointer;
+        }
+      }
+
+      /* 태블릿 전용 */
+      @media (min-width: 481px) and (max-width: 1024px) {
+      }
+      /* 데스크탑 전용 */
+      @media screen and (min-width: 1025px) {
+        .mobile-only-warning {
+          display: flex;
+          justify-content: center; /* 가로 중앙 정렬 */
+          align-items: center; /* 세로 중앙 정렬 */
+
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+
+          background-color: #ffcccc;
+          font-size: 2rem;
+          border-radius: 10px;
+          z-index: 9999;
+          text-align: center;
+        }
       }
     </style>
 
@@ -111,20 +224,26 @@
     </script>
   </head>
   <body style="background-color: beige">
-    <button id="accelPermsButton" style="height: 50px" onclick="getAccel()">
-      <h1>Get Accelerometer Permissions</h1>
-    </button>
-    <div class="indicatorDot" style="left: 30%; top: 30%"></div>
-    <div class="spotDot" style="left: 48.5vw; top: 52vh"></div>
-    <div class="title">의식저널</div>
+    <div class="mobile-only-warning">모바일을 이용해주세요 📱</div>
+    <div class="indicatorDot" style="left: 10%; top: 10%"></div>
 
-    <div class="author">
-      <a
-        href="https://www.instagram.com/suhyouri"
-        target="_blank"
-        rel="noopener noreferrer"
-        >서유리</a
-      >
+    <div class="contatiner">
+      <div class="title">의식저널</div>
+      <div>25-1</div>
+      <div class="spotDot"></div>
+      <div class="author">
+        <a
+          href="https://www.instagram.com/suhyouri"
+          target="_blank"
+          rel="noopener noreferrer"
+          >서유리</a
+        >
+      </div>
+      <div class="button">
+        <button id="accelPermsButton" style="height: 50px" onclick="getAccel()">
+          시작🔖
+        </button>
+      </div>
     </div>
   </body>
 </html>
