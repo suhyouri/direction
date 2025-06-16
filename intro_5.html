@@ -20,6 +20,34 @@
         font-size: 6vw;
         line-height: 140%;
         align-items: center;
+        /* ✨ 1. 배경색과 글자색 변경 */
+        background-color: #1c1c1c;
+        color: #dcdcdc;
+      }
+
+      /* ✨ 2. 다음 버튼 스타일 추가 */
+      .next-button {
+        display: block; /* 항상 보이도록 설정 */
+        position: fixed;
+        bottom: 8%;
+        right: 5%;
+        width: 30px;
+        height: 30px;
+        color: #dcdcdc;
+        font-size: 4rem;
+        font-weight: bold;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 60px;
+        text-decoration: none;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transition: background 0.3s, color 0.3s;
+        z-index: 100;
+      }
+
+      .next-button:hover {
+        background: #1c1c1c;
+        color: #ffffff;
       }
     </style>
   </head>
@@ -27,5 +55,7 @@
     자신이 좋아하는 향을 <br />
     들이마신다고 상상하면서 <br />
     머리는 가볍게 떠오릅니다.
+
+    <a href="main.html" class="next-button" aria-label="다음으로 이동">›</a>
   </body>
 </html>
