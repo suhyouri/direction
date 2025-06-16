@@ -17,7 +17,7 @@
       .spotDot {
         width: 50px;
         height: 50px;
-        background-color: #000000;
+        background-color: #dcdcdc; /* ✨ 배경과 대비되도록 색상 변경 */
         border-radius: 50%;
         position: relative;
         top: 50px;
@@ -34,6 +34,9 @@
         flex-direction: column;
         justify-content: last baseline;
         align-items: center;
+        /* ✨ 배경색과 글자색 변경 */
+        background-color: #1c1c1c;
+        color: #dcdcdc;
       }
 
       a {
@@ -49,13 +52,14 @@
         margin-top: 30vh;
         font-size: 3rem;
         text-align: center;
+        /* ✨ color 속성 제거하여 body 색상 상속 */
       }
 
       .author {
         margin-top: 10rem;
         font-size: 2rem;
         text-align: center;
-        color: #333;
+        color: #dcdcdc; /* ✨ 글자색 변경 */
       }
 
       .button {
@@ -70,14 +74,14 @@
         transform: translateX(-50%);
         width: 200px;
         height: 70px;
-        background-color: white;
-        border: 2px solid rgb(0, 0, 0);
+        /* ✨ 버튼 색상 반전 */
+        background-color: #dcdcdc;
+        border: 1px solid rgb(0, 0, 0);
         border-radius: 35px; /* 타원형 모양 */
-        color: rgb(0, 0, 0);
+        color: #1c1c1c;
         font-size: 1.2rem;
         cursor: pointer;
         margin: 0;
-        font-size: 1.2rem;
       }
 
       /* 기본: PC 화면에서 보임 */
@@ -88,7 +92,7 @@
       /* 모바일 전용 */
       @media (max-width: 480px) {
         .indicatorDot {
-          width: 30px; /* 50 */
+          width: 30px;
           height: 30px;
           background-color: #ff0000;
           border-radius: 50%;
@@ -98,7 +102,7 @@
         .spotDot {
           width: 30px;
           height: 30px;
-          background-color: #000000;
+          background-color: #dcdcdc; /* ✨ 배경과 대비되도록 색상 변경 */
           border-radius: 50%;
           position: relative;
           top: 5rem;
@@ -116,7 +120,7 @@
           margin-top: 10rem;
           font-size: 2rem;
           text-align: center;
-          color: #333;
+          color: #dcdcdc; /* ✨ 글자색 변경 */
         }
 
         .button {
@@ -125,16 +129,16 @@
 
         #accelPermsButton {
           position: relative;
-          /* bottom: 30%; */
           left: 50%;
           font-weight: 500;
           transform: translateX(-50%);
           width: 150px;
           height: 50px;
-          background-color: white;
+          /* ✨ 버튼 색상 반전 */
+          background-color: #dcdcdc;
           border: 2px solid rgb(0, 0, 0);
-          border-radius: 35px; /* 타원형 모양 */
-          color: rgb(0, 0, 0);
+          border-radius: 35px;
+          color: #1c1c1c;
           font-size: 1rem;
           cursor: pointer;
         }
@@ -147,8 +151,8 @@
       @media screen and (min-width: 1025px) {
         .mobile-only-warning {
           display: flex;
-          justify-content: center; /* 가로 중앙 정렬 */
-          align-items: center; /* 세로 중앙 정렬 */
+          justify-content: center;
+          align-items: center;
 
           position: fixed;
           top: 0;
@@ -156,7 +160,7 @@
           width: 100vw;
           height: 100vh;
 
-          background-color: #ffcccc;
+          background-color: yellow;
           font-size: 2rem;
           border-radius: 10px;
           z-index: 9999;
@@ -166,8 +170,8 @@
     </style>
 
     <script>
-      var px = 50; // Position x and y
-      var py = 50;
+      var px = 10; // Position x and y
+      var py = 10;
       var vx = 0.0; // Velocity x and y
       var vy = 0.0;
       var updateRate = 1 / 60; // Sensor refresh rate
@@ -223,8 +227,12 @@
       }
     </script>
   </head>
-  <body style="background-color: beige">
-    <div class="mobile-only-warning">모바일을 이용해주세요 📱</div>
+  <body style="/* ✨ 인라인 스타일 제거 */">
+    <div class="mobile-only-warning">
+      📱<br /><br />
+      모바일 환경을 이용해주세요 <br /><br />
+      Please use your mobile screen
+    </div>
     <div class="indicatorDot" style="left: 10%; top: 10%"></div>
 
     <div class="contatiner">
@@ -241,7 +249,7 @@
       </div>
       <div class="button">
         <button id="accelPermsButton" style="height: 50px" onclick="getAccel()">
-          시작🔖
+          시작
         </button>
       </div>
     </div>

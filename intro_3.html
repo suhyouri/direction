@@ -2,29 +2,291 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link
-      rel="stylesheet"
-      as="style"
-      crossorigin
-      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
     />
+    <title>Direction-3 with Clickable Button</title>
     <style>
+      /* CSS는 이전과 동일합니다. */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        background: #1c1c1c;
+      }
       body {
         padding: 5%;
-        margin: 0;
-        height: 100vh;
-        font-family: "Apple SD Gothic Neo", sans-serif;
+        box-sizing: border-box;
+        font-family: "Noto Sans KR", sans-serif;
+        color: #dcdcdc;
+        position: relative;
+      }
+      #svg-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+      }
+      .curve-line {
+        fill: none;
+        stroke: #dcdcdc;
+        stroke-width: 30px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .text-overlay {
+        position: relative;
+        z-index: 10;
         font-weight: 300;
         font-size: 6vw;
         line-height: 140%;
-        align-items: center;
+        mix-blend-mode: difference;
+        color: white;
+        pointer-events: none;
+      }
+      .draggable {
+        cursor: grab;
+        pointer-events: auto;
+      }
+      .draggable:active {
+        cursor: grabbing;
+      }
+      #centerCircle {
+        transition: r 0.1s ease-out;
+      }
+      .next-button {
+        display: none;
+        position: fixed;
+        bottom: 8%;
+        right: 5%;
+        width: 30px;
+        height: 30px;
+        color: #dcdcdc;
+        font-size: 4rem;
+        font-weight: bold;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 60px;
+        text-decoration: none;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transition: background 0.3s, color 0.3s;
+        z-index: 100;
+        pointer-events: auto;
+      }
+      .next-button:hover {
+        background: #1c1c1c;
+        color: #ffffff;
       }
     </style>
   </head>
   <body>
-    숨을 들이쉬고 <br />
-    내쉬면서 <br />갈비뼈의 움직임을 느껴봅니다.
+    <div class="text-overlay">
+      숨을 들이쉬고 <br />
+      내쉬면서 <br />갈비뼈의 움직임을 느껴봅니다.
+    </div>
+    <svg id="svg-container"></svg>
+
+    <a href="intro_4.html" class="next-button" aria-label="다음으로 이동">›</a>
+
+    <script>
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const svg = document.getElementById("svg-container");
+
+      let dragCountLeft = 0;
+      let dragCountRight = 0;
+
+      function checkAndShowButton() {
+        if (dragCountLeft >= 2 && dragCountRight >= 2) {
+          document.querySelector(".next-button").style.display = "block";
+        }
+      }
+
+      const centerCircle = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+      );
+      centerCircle.id = "centerCircle";
+      centerCircle.setAttribute("cx", vw / 2);
+      centerCircle.setAttribute("cy", vh * 0.45);
+      centerCircle.setAttribute("r", "50");
+      centerCircle.setAttribute("fill", "none");
+      centerCircle.setAttribute("stroke", "#dcdcdc");
+      centerCircle.setAttribute("stroke-width", "3");
+      centerCircle.setAttribute("stroke-dasharray", "10 5");
+      svg.prepend(centerCircle);
+      function createPathData(points) {
+        if (points.length === 0) return "";
+        let pathData = `M ${points[0].x} ${points[0].y}`;
+        for (let i = 1; i < points.length; i++) {
+          pathData += ` L ${points[i].x} ${points[i].y}`;
+        }
+        return pathData;
+      }
+      const rightCurvePoints = [];
+      for (let i = 0; i <= 50; i++) {
+        const t = i / 50;
+        const originalX = vw * 0.1 + Math.sin(t * Math.PI) * -50 + t * 100;
+        const flippedX = vw - originalX;
+        const y = vh * 0.1 + t * vh * 0.8;
+        rightCurvePoints.push({ x: flippedX, y: y });
+      }
+      const rightPath = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path"
+      );
+      rightPath.setAttribute("d", createPathData(rightCurvePoints));
+      rightPath.classList.add("curve-line");
+      svg.appendChild(rightPath);
+      const leftCurvePoints = [];
+      for (let i = 0; i <= 50; i++) {
+        const t = i / 50;
+        const x = vw * 0.1 + Math.sin(t * Math.PI) * -50 + t * 100;
+        const y = vh * 0.1 + t * vh * 0.8;
+        leftCurvePoints.push({ x: x, y: y });
+      }
+      const leftPath = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path"
+      );
+      leftPath.setAttribute("d", createPathData(leftCurvePoints));
+      leftPath.classList.add("curve-line");
+      svg.appendChild(leftPath);
+      const redCircleLeft = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+      );
+      redCircleLeft.setAttribute("r", "50");
+      redCircleLeft.setAttribute("fill", "red");
+      redCircleLeft.classList.add("draggable");
+      svg.appendChild(redCircleLeft);
+      const redCircleRight = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+      );
+      redCircleRight.setAttribute("r", "50");
+      redCircleRight.setAttribute("fill", "red");
+      redCircleRight.classList.add("draggable");
+      svg.appendChild(redCircleRight);
+
+      const baseRadius = 50;
+      const maxIncreasePerCircle = baseRadius * 0.2;
+      const yTop = leftPath.getPointAtLength(0).y;
+      const yBottom = leftPath.getPointAtLength(leftPath.getTotalLength()).y;
+      const yRange = yBottom - yTop;
+      function updateCenterCircleSize() {
+        const leftY = parseFloat(redCircleLeft.getAttribute("cy"));
+        const rightY = parseFloat(redCircleRight.getAttribute("cy"));
+        let leftProgress = (yBottom - leftY) / yRange;
+        let rightProgress = (yBottom - rightY) / yRange;
+        leftProgress = Math.max(0, Math.min(1, leftProgress));
+        rightProgress = Math.max(0, Math.min(1, rightProgress));
+        const leftIncrease = maxIncreasePerCircle * leftProgress;
+        const rightIncrease = maxIncreasePerCircle * rightProgress;
+        const newRadius = baseRadius + leftIncrease + rightIncrease;
+        centerCircle.setAttribute("r", newRadius);
+      }
+
+      const activeDrags = new Map();
+
+      function getClosestPointOnPath(path, x, y) {
+        const totalLength = path.getTotalLength();
+        let minDistance = Infinity;
+        let closestPoint = null;
+        for (let i = 0; i <= 100; i++) {
+          const point = path.getPointAtLength(totalLength * (i / 100));
+          const dx = point.x - x;
+          const dy = point.y - y;
+          const distance = dx * dx + dy * dy;
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestPoint = point;
+          }
+        }
+        return closestPoint;
+      }
+
+      function handleTouchStart(e) {
+        e.preventDefault();
+        const targetCircle = e.target;
+        const path = targetCircle === redCircleLeft ? leftPath : rightPath;
+        for (const touch of e.changedTouches) {
+          activeDrags.set(touch.identifier, {
+            circle: targetCircle,
+            path: path,
+          });
+        }
+      }
+
+      function handleTouchMove(e) {
+        // e.preventDefault(); // <-- 위치 이동
+        for (const touch of e.changedTouches) {
+          if (activeDrags.has(touch.identifier)) {
+            e.preventDefault(); // ✨ 드래그 중일 때만 기본 동작 방지
+            const { circle, path } = activeDrags.get(touch.identifier);
+            const svgPoint = svg.createSVGPoint();
+            svgPoint.x = touch.clientX;
+            svgPoint.y = touch.clientY;
+            const transformedPoint = svgPoint.matrixTransform(
+              svg.getScreenCTM().inverse()
+            );
+            const closestPathPoint = getClosestPointOnPath(
+              path,
+              transformedPoint.x,
+              transformedPoint.y
+            );
+            if (closestPathPoint) {
+              circle.setAttribute("cx", closestPathPoint.x);
+              circle.setAttribute("cy", closestPathPoint.y);
+              updateCenterCircleSize();
+            }
+          }
+        }
+      }
+
+      function handleTouchEnd(e) {
+        // e.preventDefault(); // <-- 위치 이동
+        for (const touch of e.changedTouches) {
+          if (activeDrags.has(touch.identifier)) {
+            e.preventDefault(); // ✨ 드래그 중이던 터치가 끝날 때만 기본 동작 방지
+            const { circle } = activeDrags.get(touch.identifier);
+
+            if (circle === redCircleLeft) {
+              dragCountLeft++;
+            } else if (circle === redCircleRight) {
+              dragCountRight++;
+            }
+
+            checkAndShowButton();
+            activeDrags.delete(touch.identifier);
+          }
+        }
+      }
+
+      redCircleLeft.addEventListener("touchstart", handleTouchStart);
+      redCircleRight.addEventListener("touchstart", handleTouchStart);
+      window.addEventListener("touchmove", handleTouchMove, { passive: false });
+      window.addEventListener("touchend", handleTouchEnd);
+      window.addEventListener("touchcancel", handleTouchEnd);
+
+      const initialLeftPoint = leftPath.getPointAtLength(
+        leftPath.getTotalLength()
+      );
+      redCircleLeft.setAttribute("cx", initialLeftPoint.x);
+      redCircleLeft.setAttribute("cy", initialLeftPoint.y);
+      const initialRightPoint = rightPath.getPointAtLength(
+        rightPath.getTotalLength()
+      );
+      redCircleRight.setAttribute("cx", initialRightPoint.x);
+      redCircleRight.setAttribute("cy", initialRightPoint.y);
+      updateCenterCircleSize();
+    </script>
   </body>
 </html>
