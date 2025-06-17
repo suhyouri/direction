@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Drag & Bounce Emojis</title>
+    <title>Main</title>
     <style>
       body {
         margin: 0;
@@ -74,8 +74,6 @@
         width: 89vw;
         position: absolute;
         top: 1rem;
-        /* left: 0;
-        right: 0; */
         padding: 0 1rem;
         font-size: 1.2rem;
         z-index: 10;
@@ -86,7 +84,7 @@
       }
 
       .bottom-guide {
-        position:absolute;
+        position: absolute;
         left: 5%;
         bottom: 20%;
         width: 100%;
@@ -131,24 +129,49 @@
         font-size: 1.5rem;
         cursor: pointer;
       }
+
+      .checklist {
+        text-align: center;
+        font-size: 1rem;
+        list-style-type: none; /* 기본 리스트 마커(점) 제거 */
+        padding-left: 0;
+        margin: 0; /* 위아래 기본 마진 제거 */
+        line-height: 1.5; /* 줄 간격 */
+      }
+
+      p {
+        line-height: 1.5; /* 줄 간격 */
+      }
+
+      a {
+        text-decoration: none; /* 밑줄 제거 */
+        color: inherit; /* 텍스트 색상을 부모 요소로부터 상속 */
+      }
+
+      img {
+        display: block;
+        top: 20%;
+        width: 80%;
+        height: auto;
+      }
     </style>
   </head>
   <body>
-    <img src="file.svg" alt="asterisk" />
-    <!-- UI 상단 텍스트 버튼들 -->
+    <img src="star.png" alt="asterisk" />
     <div class="top-ui">
       <div class="left" onclick="location.href='index.html'">⏪ 처음으로</div>
-      <div class="right" onclick="openModal()">🧑🏻‍💻 만든이</div>
+      <div class="right" onclick="openModal()">🤔 안내</div>
     </div>
 
-    <!-- 🟨 이미지 및 이모지 등 기존 요소들 -->
-    <img src="file.svg" alt="asterisk" />
-    <!-- ...이모지들 및 타겟들 생략... -->
+    <div class="bottom-guide">
+      <a
+        href="https://www.instagram.com/suhyouri"
+        target="_blank"
+        rel="noopener noreferrer"
+        >©서유리</a
+      >
+    </div>
 
-    <!-- 🦶 하단 안내 텍스트 -->
-    <div class="bottom-guide">드래그 & 드롭하여<br />이동하세요</div>
-
-    <!-- 👣 움직이는 이모지들 -->
     <div class="emoji">👀</div>
     <div class="emoji">👋</div>
     <div class="emoji">🦶</div>
@@ -161,32 +184,85 @@
     <div class="emoji">💪🏼</div>
     <div class="emoji">🧠</div>
 
-    <!-- 🎯 별 다섯 팔 끝점 타겟 (각도 지정 가능) -->
-    <div class="target" data-url="page1.html" data-angle="-90"></div>
-    <div class="target" data-url="page2.html" data-angle="0"></div>
-    <div class="target" data-url="page3.html" data-angle="72"></div>
-    <div class="target" data-url="page4.html" data-angle="144"></div>
-    <div class="target" data-url="page5.html" data-angle="216"></div>
+    <div
+      class="target"
+      data-url="page1.html"
+      data-x="37"
+      data-y="18"
+      alt="breath"
+      id="breath"
+    ></div>
+    <div
+      class="target"
+      data-url="page2.html"
+      data-x="17"
+      data-y="53"
+      alt="feet"
+      id="feet"
+    ></div>
+    <div
+      class="target"
+      data-url="page3.html"
+      data-x="67"
+      data-y="24"
+      alt="shouLder"
+      id="shoulder"
+    ></div>
+    <div
+      class="target"
+      data-url="page4.html"
+      data-x="66"
+      data-y="50"
+      alt="walkingSitting"
+      id="walkingSitting"
+    ></div>
+    <div
+      class="target"
+      data-url="page5.html"
+      data-x="8"
+      data-y="23"
+      alt="inhibition"
+      id="inhibition"
+    ></div>
 
     <div class="mobile-only-warning">⚠️ 모바일 기기에서 이용해주세요</div>
 
-    <!-- 📦 모달 (숨겨져 있음) -->
     <div id="infoModal" class="modal-overlay">
       <div class="modal-content">
         <button class="close-button" onclick="closeModal()">×</button>
         <h2>안내</h2>
         <p>
-          이 페이지는 2025년 1학기 무용과학세미나 <br />의식저널을 위한 웹페이지
-          입니다. <br /><br />
-          <p style="text-align: left; font-size: 1.2rem;">
-          ✅ 각자의 습을 발견하기 <br />
-          ✅ 나에게서 변하지 않는것? 충동, 호기심, 미지의 세계 탐구 <br />✅
-          변했으면 하는 것? 뻣뻣한 몸 <br />✅ 내가 궁금한 지점? 신체부상이
-          심리적인 문제일 수도 있을까? 신경가소성, 통증의 위계
-          <br />
+          이 페이지는 알렉산더 테크닉을 경험하고 기록한<br />5개의 의식저널로
+          이동하는 웹페이지 입니다. <br />
         </p>
+        🤔
+        <h4>이동하는 신체를 붙잡아 <br />원에 넣으면 의식저널로 이동합니다.</h4>
+
+        <ul class="checklist">
+          <li>
+            <b>📌 <br />초기 질문</b>
+          </li>
+          <br />
+          <li>✅ 각자의 습을 발견하기</li>
+          <li>
+            ✅ 나에게서 변하지 않는것? <br />
+            충동, 호기심, 미지의 세계 탐구
+          </li>
+          <li>✅ 변했으면 하는 것? 뻣뻣한 몸</li>
+          <li>
+            ✅ 내가 궁금한 지점? <br />
+            신체부상이 심리적인 문제일 수도 있을까?<br />
+            신경가소성, 통증의 위계
+          </li>
+        </ul>
         <br />
-          서유리 제작
+        <p>
+          <a
+            href="https://www.instagram.com/suhyouri"
+            target="_blank"
+            rel="noopener noreferrer"
+            >©2025서유리</a
+          >
         </p>
       </div>
     </div>
@@ -197,18 +273,18 @@
       const svg = document.querySelector("img");
       const directions = [];
 
-      // 🎯 target 위치 계산
+      // 🎯 target 위치 계산 (개별 위치 지정 방식으로 수정됨)
       function updateTargetPositions() {
-        const svgRect = svg.getBoundingClientRect();
-        const cx = svgRect.left + svgRect.width / 2;
-        const cy = svgRect.top + svgRect.height / 2;
-        const r = svgRect.width * 0.4;
-
         targets.forEach((target) => {
-          const angleDeg = parseFloat(target.getAttribute("data-angle")) || 0;
-          const angle = angleDeg * (Math.PI / 180);
-          const x = cx + r * Math.cos(angle) - 20;
-          const y = cy + r * Math.sin(angle) - 20;
+          // HTML의 data-x, data-y 속성 값을 가져옵니다 (없을 경우 50%로 중앙 설정).
+          const xPercent = parseFloat(target.getAttribute("data-x")) || 50;
+          const yPercent = parseFloat(target.getAttribute("data-y")) || 50;
+
+          // 퍼센트 값을 실제 화면의 픽셀 값으로 변환합니다.
+          // 20px을 빼는 것은 target 요소 크기(40px)의 절반만큼 보정하여 중앙에 맞추기 위함입니다.
+          const x = (window.innerWidth * xPercent) / 100 - 20;
+          const y = (window.innerHeight * yPercent) / 100 - 20;
+
           target.style.left = `${x}px`;
           target.style.top = `${y}px`;
         });
@@ -289,23 +365,35 @@
         };
 
         // mouse
-        emoji.addEventListener("mousedown", (e) =>
-          startDrag(e.clientX, e.clientY)
+        emoji.addEventListener(
+          "mousedown",
+          (e) => startDrag(e.clientX, e.clientY),
+          { passive: true }
         );
-        document.addEventListener("mousemove", (e) =>
-          moveDrag(e.clientX, e.clientY)
+        document.addEventListener(
+          "mousemove",
+          (e) => moveDrag(e.clientX, e.clientY),
+          { passive: true }
         );
         document.addEventListener("mouseup", endDrag);
 
         // touch
-        emoji.addEventListener("touchstart", (e) => {
-          const t = e.touches[0];
-          startDrag(t.clientX, t.clientY);
-        });
-        document.addEventListener("touchmove", (e) => {
-          const t = e.touches[0];
-          moveDrag(t.clientX, t.clientY);
-        });
+        emoji.addEventListener(
+          "touchstart",
+          (e) => {
+            const t = e.touches[0];
+            startDrag(t.clientX, t.clientY);
+          },
+          { passive: true }
+        );
+        document.addEventListener(
+          "touchmove",
+          (e) => {
+            const t = e.touches[0];
+            moveDrag(t.clientX, t.clientY);
+          },
+          { passive: true }
+        );
         document.addEventListener("touchend", endDrag);
       });
 

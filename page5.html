@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Journal of awareness-5. Inhibition</title>
     <link
       rel="stylesheet"
       as="style"
@@ -14,54 +14,125 @@
       body {
         padding: 5%;
         margin: 0;
-        height: 100vh;
         font-family: "Apple SD Gothic Neo", sans-serif;
         font-weight: 300;
         font-size: 6vw;
         line-height: 140%;
         align-items: center;
+        background-color: #1c1c1c;
+        color: #dcdcdc;
       }
 
       .back-button {
-        position: relative; /* 상단 고정 위치 */
+        position: relative;
         top: 1rem;
-        background-color: white;
         border: none;
         font-size: 2rem;
         padding-bottom: 2rem;
         cursor: pointer;
-        z-index: 999; /* 충분히 위로 */
+        z-index: 999;
+        background-color: transparent;
+        color: #dcdcdc;
+      }
+
+      .inhibition-text {
+        display: flex;
+        flex-direction: column;
+        font-size: 4vw;
+        position: relative;
+        z-index: 1;
+      }
+
+      .inhibition-text ul {
+        padding-left: 6vw;
+      }
+
+      .inhibition-text .title {
+        font-size: 6vw;
+        font-weight: bold;
+      }
+
+      #inhibition-line-svg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        mix-blend-mode: difference;
+        pointer-events: none;
+      }
+
+      #inhibition-path {
+        stroke: #ffffff;
+        stroke-width: 20;
+        stroke-linecap: round;
       }
     </style>
   </head>
   <body>
-    인히비션
+    <svg
+      id="inhibition-line-svg"
+      viewBox="20 0 400 1200"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <path
+        id="inhibition-path"
+        d="M 200,600 C 227.7,600 250,577.7 250,550 C 250,522.3 227.7,500 200,500 C 172.3,500 150,522.3 150,550 C 150,605.4 172.3,650 200,650 C 255.4,650 300,605.4 300,550 C 300,494.6 255.4,450 200,450 C 144.6,450 100,494.6 100,550 C 100,632.8 144.6,700 200,700 C 282.8,700 350,632.8 350,550 C 350,467.2 282.8,400 200,400 C 117.2,400 50,467.2 50,550 C 50,661.2 117.2,750 200,750 C 309.8,750 400,661.2 400,550"
+        fill="none"
+      />
+    </svg>
 
-    <p>과제</p>
-    <ul>
-      <li>내 습을 찾고, 하지 않아 보기</li>
-      <li>짜증이 날 때 신체 반응을 지켜보기</li>
-      <li>이 신체 반응을 하지 않으면 어떻게 될까?</li>
-      <li>앉고 서기와 이전 작업들을 누워서 리뷰</li>
-      <li>
-        세미수파인 자세에서 실험:
-        <ul>
-          <li>고개 돌리기</li>
-          <li>시선 사용</li>
-          <li>한쪽 눈 감고 머리를 이동 반대 방향 손 이마 얹기</li>
-          <li>의자를 찾지 않고 앉고 서기</li>
-          <li>무게 중심과 고개, 일자 등 유지</li>
-        </ul>
-      </li>
-      <li>벽에 무릎을 대고, 목의 자유를 허락하기</li>
-      <li>고개를 숙이고 골반을 놓아주고 상체를 앞으로 숙이기</li>
-      <li>날개뼈 사이 척추 커브 만들기</li>
-      <li>사일런스 아, AH 를 통해 척추를 숨과 함께 길게 만들기</li>
-      <li>
-        에이오 조인트 위에 고개 세우고, 첫 번째 날개뼈 사이 척추의 1번 커브
-        기억하기
-      </li>
-    </ul>
+    <div class="inhibition-text">
+      <p class="title">인히비션</p>
+
+      <p><b>과제</b></p>
+      <ul>
+        <li>내 습을 찾고, 하지 않아 보기</li>
+        <li>짜증이 날 때 신체 반응을 지켜보기</li>
+        <li>이 신체 반응을 하지 않으면 어떻게 될까?</li>
+        <li>앉고 서기와 이전 작업들을 누워서 리뷰</li>
+        <li>
+          세미수파인 자세에서 실험:
+          <ul>
+            <li>고개 돌리기</li>
+            <li>시선 사용</li>
+            <li>한쪽 눈 감고 머리를 이동 반대 방향 손 이마 얹기</li>
+            <li>의자를 찾지 않고 앉고 서기</li>
+            <li>무게 중심과 고개, 일자 등 유지</li>
+          </ul>
+        </li>
+        <li>벽에 무릎을 대고, 목의 자유를 허락하기</li>
+        <li>고개를 숙이고 골반을 놓아주고 상체를 앞으로 숙이기</li>
+        <li>날개뼈 사이 척추 커브 만들기</li>
+        <li>사일런스 아, AH 를 통해 척추를 숨과 함께 길게 만들기</li>
+        <li>
+          에이오 조인트 위에 고개 세우고, 첫 번째 날개뼈 사이 척추의 1번 커브
+          기억하기
+        </li>
+      </ul>
+    </div>
     <button class="back-button" onclick="location.href='main.html'">⏪</button>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const path = document.querySelector("#inhibition-path");
+        const pathLength = path.getTotalLength();
+
+        path.style.strokeDasharray = pathLength;
+        path.style.strokeDashoffset = pathLength;
+
+        window.addEventListener("scroll", () => {
+          const scrollTop = document.documentElement.scrollTop;
+          const scrollHeight = document.documentElement.scrollHeight;
+          const clientHeight = document.documentElement.clientHeight;
+
+          const scrollPercentage = scrollTop / (scrollHeight - clientHeight);
+
+          const drawLength = pathLength * scrollPercentage;
+          path.style.strokeDashoffset = pathLength - drawLength;
+        });
+      });
+    </script>
   </body>
 </html>

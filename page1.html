@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Journal of awareness. Breath</title>
     <link
       rel="stylesheet"
       as="style"
@@ -14,40 +14,80 @@
       body {
         padding: 5%;
         margin: 0;
-        height: 100vh;
         font-family: "Apple SD Gothic Neo", sans-serif;
         font-weight: 300;
         font-size: 6vw;
         line-height: 140%;
         align-items: center;
+        background-color: #1c1c1c;
+        color: #dcdcdc;
       }
 
       .back-button {
-        position: relative; /* 상단 고정 위치 */
+        position: relative;
         top: 1rem;
-        background-color: white;
         border: none;
         font-size: 2rem;
         padding-bottom: 2rem;
         cursor: pointer;
-        z-index: 999; /* 충분히 위로 */
+        z-index: 999;
+        background-color: transparent;
+        color: #dcdcdc;
       }
 
       .breath-text {
         display: flex;
         flex-direction: column;
+        font-size: 4vw;
+        position: relative;
+        z-index: 1;
+      }
+
+      .title {
+        font-size: 6vw;
+      }
+
+      #breath-line-svg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        mix-blend-mode: difference;
+        pointer-events: none;
+      }
+
+      #breath-path {
+        stroke: #ffffff;
+        /* ✅ 루프 모양이 잘 보이도록 두께를 5로 조절했습니다. */
+        stroke-width: 30;
+        stroke-linecap: round;
       }
     </style>
   </head>
   <body>
+    <svg
+      id="breath-line-svg"
+      viewBox="0 0 400 1200"
+      preserveAspectRatio="xMidYMax meet"
+    >
+      <path
+        id="breath-path"
+        d="M 200,50 L 200,300 C 50,300 50,550 200,550 C 350,550 350,300 200,350 L 200,1150"
+        fill="none"
+      />
+    </svg>
+
     <div class="breath-text">
-      <p>호흡</p>
+      <p class="title"><b>호흡</b></p>
       <p>
-        숨을 잘 쉬고 있나요? 라는 질문에 ‘나는 숨을 참는 사람’이라고 얘기했다.
-        나도 모르게 긴장을 하고, 몸을 이완하기 위해 호흡을 한다. 그러고 보면
-        남들 앞에서 춤을 출 때는 몸이 굳는다. 더 명확히는 시선을 느끼면 몸이
-        굳는 것 같다. 왜? 지적받았던 기억 때문에? 그럼에도 나는 계속 춤을 추고
-        싶어하고, 그 시선을 넘고싶어한다. 긴장된 몸 이곳저곳을 두드리면서.
+        숨을 잘 쉬고 있나요? 라는 질문에 <b>‘나는 숨을 참는 사람’</b>이라고
+        얘기했다. 나도 모르게 긴장을 하고, 몸을 이완하기 위해 호흡을 한다.
+        그러고 보면 남들 앞에서 춤을 출 때는 몸이 굳는다. 더 명확히는 시선을
+        느끼면 몸이 굳는 것 같다. 왜? 지적받았던 기억 때문에? 그럼에도 나는 계속
+        춤을 추고 싶어하고, 그 시선을 넘고싶어한다. 긴장된 몸 이곳저곳을
+        두드리면서.
       </p>
 
       <p>
@@ -66,13 +106,12 @@
       </p>
 
       <p>
-        생각해보면 숨을 참는 것보다 내뱉는게 고통에 도움이 된다는 걸 언제
-        알았을까? 살아있다면 언젠가 숨을 쉬기는 해야하니까. 요가를 할 때 숨을
-        내쉬면 몸이 이완되는 걸 느낀다. 한 번도 양옆다리찢기를 해본 적이 없이
-        태어날 때부터 몸이 원래 뻣뻣한 편이긴하다. 숨을 내쉴 때 선생님이
-        가동범위를 늘여주기도 한다. 지난 보홀휴가에서의 요가경험은 신기했다.
-        선생님이 큰 힘을 쓴 것도 아닌데, 어떤 부분을 손으로 펼쳐주니 몸이
-        늘어났다.
+        숨을 참는 것보다 내뱉는게 고통에 도움이 된다는 걸 언제 알았을까?
+        살아있다면 언젠가 숨을 쉬기는 해야하니까. 요가를 할 때 숨을 내쉬면 몸이
+        이완되는 걸 느낀다. 한 번도 양옆다리찢기를 해본 적이 없이 태어날 때부터
+        몸이 원래 뻣뻣한 편이긴하다. 숨을 내쉴 때 선생님이 가동범위를 늘여주기도
+        한다. 지난 보홀휴가에서의 요가경험은 신기했다. 선생님이 큰 힘을 쓴 것도
+        아닌데, 어떤 부분을 손으로 펼쳐주니 몸이 늘어났다.
       </p>
 
       <p>
@@ -91,9 +130,9 @@
       </p>
 
       <p>
-        중2때 경험했던 공황장애가 생각난다. 친구랑 동대문에 옷을 사러가는
-        지하철에서 갑자기 숨을 쉬지 못하겠더니 지하철 내부 밀폐된 공간 안에
-        더이상 있을 수가 없었다. 가까운 병원에 갔더니 안톤증후군이라는
+        중학교 2학년즈음 경험했던 공황장애가 생각난다. 친구랑 동대문에 옷을
+        사러가는 지하철에서 갑자기 숨을 쉬지 못하겠더니 지하철 내부 밀폐된 공간
+        안에 더이상 있을 수가 없었다. 가까운 병원에 갔더니 안톤증후군이라는
         무시무시한 불치병이야기를 꺼내서 한 동안 충격에 빠졌던 생각이 난다.
         요새는 공황장애라는 말이 익숙해졌지만, 그 때는 그런 단어가 있는지도
         몰랐다. 숨을 쉬는데 쉬어지지 않는 기분. 물 밖에 있는데도, 숨이 차
@@ -111,5 +150,26 @@
       </p>
     </div>
     <button class="back-button" onclick="location.href='main.html'">⏪</button>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const path = document.querySelector("#breath-path");
+        const pathLength = path.getTotalLength();
+
+        path.style.strokeDasharray = pathLength;
+        path.style.strokeDashoffset = pathLength;
+
+        window.addEventListener("scroll", () => {
+          const scrollTop = document.documentElement.scrollTop;
+          const scrollHeight = document.documentElement.scrollHeight;
+          const clientHeight = document.documentElement.clientHeight;
+
+          const scrollPercentage = scrollTop / (scrollHeight - clientHeight);
+
+          const drawLength = pathLength * scrollPercentage;
+          path.style.strokeDashoffset = pathLength - drawLength;
+        });
+      });
+    </script>
   </body>
 </html>
