@@ -18,28 +18,15 @@
         padding: 0;
         width: 100%;
         height: 100%;
-
-        background-color: #1c1c1c;
-        color: #dcdcdc;
-        overflow: hidden;
-        /* ✅ 폰트 스타일 변경 */
-        font-family: "Apple SD Gothic Neo", sans-serif;
-      }
-
-      .container {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
         background-color: #1c1c1c;
         color: #dcdcdc;
         overflow: hidden;
-        /* ✅ 폰트 스타일 변경 */
         font-family: "Apple SD Gothic Neo", sans-serif;
       }
+
       /* --- 얼굴 애니메이션 스타일 --- */
       .face {
         width: 300px;
@@ -56,6 +43,8 @@
         display: flex;
         justify-content: space-between;
         width: 200px;
+        transition: transform 0.3s ease-in-out;
+        z-index: 1;
       }
 
       .eye {
@@ -84,25 +73,48 @@
         display: flex;
         justify-content: space-between;
         top: 135px;
-        transition: top 0.3s ease-in-out;
+        transition: top 0.3s ease-in-out, transform 0.3s ease-in-out;
+        z-index: 2;
       }
 
       .red-eyelid {
+        width: 82px;
+        height: 40px;
+        background-color: #d3d3d3;
+        border-radius: 50%;
+        position: relative;
+        left: -1px;
+      }
+
+      .black-circle-container {
+        position: absolute;
+        width: 200px;
+        display: flex;
+        justify-content: space-between;
+        top: 135px;
+        z-index: 3;
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .black-circle {
         width: 80px;
         height: 40px;
-        background-color: #ff4136;
+        background-color: black;
         border-radius: 50%;
       }
 
+      .face.is-tilted-up .eye-container,
+      .face.is-tilted-up .eyelid-container,
+      .face.is-tilted-up .black-circle-container {
+        transform: translateY(-20px);
+      }
+
       .face.is-tilted-up .eyelid-container {
-        top: 180px;
+        top: 178px;
       }
 
       #permission-button {
-        display: block;
-        left: 38%;
-        top: 60%;
-        /* padding: 1rem 2rem; */
+        padding: 1rem 2rem;
         font-size: 1.5rem;
         cursor: pointer;
         border-radius: 10px;
@@ -112,19 +124,17 @@
         z-index: 10;
       }
 
-      /* --- 기존 Direction-5 콘텐츠 스타일 --- */
+      /* ✅ 텍스트 위치 및 정렬 스타일 수정 */
       .text-content {
-        display: block;
         position: fixed;
-        top: 0;
+        top: 0; /* 상단에 위치 */
         left: 0;
         width: 100%;
-        text-align: left;
+        text-align: left; /* 왼쪽 정렬 */
         font-weight: 300;
         line-height: 140%;
-        padding: 5%;
+        padding: 5%; /* 상하좌우 패딩 */
         box-sizing: border-box;
-        /* ✅ 폰트 크기 변경 */
         font-size: 6vw;
       }
 
@@ -155,20 +165,22 @@
   <body>
     <button id="permission-button">시작하기</button>
 
-    <div class="container">
-      <div class="face">
-        <div class="eye-container">
-          <div class="eye">
-            <div class="pupil"></div>
-          </div>
-          <div class="eye">
-            <div class="pupil"></div>
-          </div>
+    <div class="face">
+      <div class="eye-container">
+        <div class="eye">
+          <div class="pupil"></div>
         </div>
-        <div class="eyelid-container">
-          <div class="red-eyelid"></div>
-          <div class="red-eyelid"></div>
+        <div class="eye">
+          <div class="pupil"></div>
         </div>
+      </div>
+      <div class="eyelid-container">
+        <div class="red-eyelid"></div>
+        <div class="red-eyelid"></div>
+      </div>
+      <div class="black-circle-container">
+        <div class="black-circle"></div>
+        <div class="black-circle"></div>
       </div>
     </div>
 
@@ -209,7 +221,6 @@
       function handleOrientation(event) {
         let { beta, gamma } = event;
 
-        // 눈동자 움직임
         const moveXMax = 25;
         const moveYMax = 5;
         let x = (gamma / 90) * moveXMax;
@@ -220,7 +231,6 @@
           pupil.style.transform = `translate(${x}px, ${y}px)`;
         });
 
-        // 눈꺼풀 제어
         if (beta < 25) {
           face.classList.add("is-tilted-up");
         } else {
