@@ -184,43 +184,23 @@
     <div class="emoji">💪🏼</div>
     <div class="emoji">🧠</div>
 
-    <div
-      class="target"
-      data-url="page1.html"
-      data-x="37"
-      data-y="18"
-      alt="breath"
-      id="breath"
-    ></div>
-    <div
-      class="target"
-      data-url="page2.html"
-      data-x="17"
-      data-y="53"
-      alt="feet"
-      id="feet"
-    ></div>
+    <div class="target" data-url="page1.html" alt="breath" id="breath"></div>
+    <div class="target" data-url="page2.html" alt="feet" id="feet"></div>
     <div
       class="target"
       data-url="page3.html"
-      data-x="67"
-      data-y="24"
       alt="shouLder"
       id="shoulder"
     ></div>
     <div
       class="target"
       data-url="page4.html"
-      data-x="66"
-      data-y="50"
       alt="walkingSitting"
       id="walkingSitting"
     ></div>
     <div
       class="target"
       data-url="page5.html"
-      data-x="8"
-      data-y="23"
       alt="inhibition"
       id="inhibition"
     ></div>
@@ -273,17 +253,25 @@
       const svg = document.querySelector("img");
       const directions = [];
 
-      // 🎯 target 위치 계산 (개별 위치 지정 방식으로 수정됨)
+      // ✅ target 위치 계산 함수를 원형 배치 방식으로 수정
       function updateTargetPositions() {
-        targets.forEach((target) => {
-          // HTML의 data-x, data-y 속성 값을 가져옵니다 (없을 경우 50%로 중앙 설정).
-          const xPercent = parseFloat(target.getAttribute("data-x")) || 50;
-          const yPercent = parseFloat(target.getAttribute("data-y")) || 50;
+        // 1. 원의 중심을 스크린의 정중앙으로 설정
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
 
-          // 퍼센트 값을 실제 화면의 픽셀 값으로 변환합니다.
-          // 20px을 빼는 것은 target 요소 크기(40px)의 절반만큼 보정하여 중앙에 맞추기 위함입니다.
-          const x = (window.innerWidth * xPercent) / 100 - 20;
-          const y = (window.innerHeight * yPercent) / 100 - 20;
+        // 2. 원의 반지름 설정 (화면 너비의 35% 정도로)
+        const radius = window.innerWidth * 0.35;
+
+        // 3. 각도를 계산하여 target들을 원형으로 배치
+        targets.forEach((target, index) => {
+          // 72도 간격으로 각도를 계산 (360도 / 5개 = 72도)
+          // -90도를 하여 첫 번째 점이 상단에 오도록 함
+          const angle = (index * 72 - 90) * (Math.PI / 180); // 라디안으로 변환
+
+          // 4. x, y 좌표 계산
+          // 20px을 빼는 것은 target 요소 크기(40px)의 절반만큼 보정하여 중앙에 맞추기 위함
+          const x = centerX + radius * Math.cos(angle) - 20;
+          const y = centerY + radius * Math.sin(angle) - 20;
 
           target.style.left = `${x}px`;
           target.style.top = `${y}px`;
@@ -294,7 +282,6 @@
       window.addEventListener("load", () => {
         updateTargetPositions();
 
-        // 🌀 초기 이모지 위치와 방향 설정
         emojis.forEach((el, i) => {
           const size = 80;
           const x = Math.random() * (window.innerWidth - size);
@@ -311,11 +298,9 @@
         moveEmojis();
       });
 
-      // 🎈 튕기기 애니메이션
       function moveEmojis() {
         emojis.forEach((el, i) => {
           if (el.dataset.dragging === "true") return;
-
           const rect = el.getBoundingClientRect();
           const size = rect.width;
           let x = rect.left + directions[i].dx;
@@ -333,16 +318,13 @@
           el.style.left = `${x}px`;
           el.style.top = `${y}px`;
         });
-
         requestAnimationFrame(moveEmojis);
       }
 
-      // 🖱️ & 📱 드래그 기능
       emojis.forEach((emoji) => {
         let offsetX = 0,
           offsetY = 0,
           isDragging = false;
-
         const startDrag = (x, y) => {
           isDragging = true;
           const rect = emoji.getBoundingClientRect();
@@ -350,21 +332,17 @@
           offsetY = y - rect.top;
           emoji.dataset.dragging = "true";
         };
-
         const moveDrag = (x, y) => {
           if (!isDragging) return;
           emoji.style.left = `${x - offsetX}px`;
           emoji.style.top = `${y - offsetY}px`;
         };
-
         const endDrag = () => {
           if (!isDragging) return;
           isDragging = false;
           emoji.removeAttribute("data-dragging");
           checkOverlap(emoji);
         };
-
-        // mouse
         emoji.addEventListener(
           "mousedown",
           (e) => startDrag(e.clientX, e.clientY),
@@ -376,8 +354,6 @@
           { passive: true }
         );
         document.addEventListener("mouseup", endDrag);
-
-        // touch
         emoji.addEventListener(
           "touchstart",
           (e) => {
@@ -397,7 +373,6 @@
         document.addEventListener("touchend", endDrag);
       });
 
-      // 📦 타겟 충돌 체크
       function checkOverlap(emoji) {
         const emojiRect = emoji.getBoundingClientRect();
         targets.forEach((target) => {
@@ -407,7 +382,6 @@
             emojiRect.right > targetRect.left &&
             emojiRect.top < targetRect.bottom &&
             emojiRect.bottom > targetRect.top;
-
           if (isOverlap) {
             const url = target.getAttribute("data-url");
             window.location.href = url;
