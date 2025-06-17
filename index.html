@@ -6,8 +6,9 @@
     <title>⛈️의식저널☁️</title>
 
     <style>
+      /* CSS 스타일은 변경 사항이 없으므로 그대로 유지합니다. */
       .indicatorDot {
-        width: 20px; /* 30 */
+        width: 20px;
         height: 20px;
         background-color: #ff0000;
         border-radius: 50%;
@@ -17,7 +18,7 @@
       .spotDot {
         width: 20px;
         height: 20px;
-        background-color: #dcdcdc; /* ✨ 배경과 대비되도록 색상 변경 */
+        background-color: #dcdcdc;
         border-radius: 50%;
         position: relative;
         top: 50px;
@@ -34,7 +35,6 @@
         flex-direction: column;
         justify-content: last baseline;
         align-items: center;
-        /* ✨ 배경색과 글자색 변경 */
         background-color: #1c1c1c;
         color: #dcdcdc;
       }
@@ -52,14 +52,13 @@
         margin-top: 30vh;
         font-size: 3rem;
         text-align: center;
-        /* ✨ color 속성 제거하여 body 색상 상속 */
       }
 
       .author {
         margin-top: 10rem;
         font-size: 2rem;
         text-align: center;
-        color: #dcdcdc; /* ✨ 글자색 변경 */
+        color: #dcdcdc;
       }
 
       .button {
@@ -68,125 +67,127 @@
       }
       #accelPermsButton {
         position: relative;
-        /* bottom: 30%; */
         left: 50%;
         font-weight: 500;
         transform: translateX(-50%);
         width: 200px;
         height: 70px;
-        /* ✨ 버튼 색상 반전 */
         background-color: #dcdcdc;
         border: 1px solid rgb(0, 0, 0);
-        border-radius: 35px; /* 타원형 모양 */
+        border-radius: 35px;
         color: #1c1c1c;
         font-size: 1.2rem;
         cursor: pointer;
         margin: 0;
       }
 
-      /* 기본: PC 화면에서 보임 */
       .mobile-only-warning {
         display: none;
         color: black;
       }
 
-      /* 모바일 전용 */
+      .spotDot::after {
+        content: "👉🏼";
+        position: absolute;
+        font-size: 1.5rem;
+        top: 0px;
+        right: 5px;
+        transform: rotate(220deg);
+      }
+
       @media (max-width: 480px) {
         .indicatorDot {
           width: 30px;
           height: 30px;
-          background-color: #ff0000;
-          border-radius: 50%;
-          position: fixed;
         }
-
         .spotDot {
           width: 30px;
           height: 30px;
-          background-color: #dcdcdc; /* ✨ 배경과 대비되도록 색상 변경 */
-          border-radius: 50%;
-          position: relative;
           top: 5rem;
-          text-align: center;
-          margin: 0 auto;
         }
-
         .title {
           margin-top: 24vh;
-          font-size: 3rem;
-          text-align: center;
         }
-
         .author {
           margin-top: 10rem;
-          font-size: 2rem;
-          text-align: center;
-          color: #dcdcdc; /* ✨ 글자색 변경 */
         }
-
         .button {
           padding-top: 5rem;
         }
-
         #accelPermsButton {
-          position: relative;
-          left: 50%;
-          font-weight: 500;
-          transform: translateX(-50%);
           width: 150px;
           height: 50px;
-          /* ✨ 버튼 색상 반전 */
-          background-color: #dcdcdc;
-          border: 2px solid rgb(0, 0, 0);
-          border-radius: 35px;
-          color: #1c1c1c;
+          border-width: 2px;
           font-size: 1rem;
-          cursor: pointer;
+        }
+        .spotDot::after {
+          font-size: 2rem;
+          top: 20px;
+          right: -30px;
         }
       }
 
-      /* 태블릿 전용 */
       @media (min-width: 481px) and (max-width: 1024px) {
+        .spotDot::after {
+          font-size: 2rem;
+          top: 10px;
+          right: -40px;
+        }
       }
-      /* 데스크탑 전용 */
+
       @media screen and (min-width: 1025px) {
         .mobile-only-warning {
           display: flex;
           justify-content: center;
           align-items: center;
-
           position: fixed;
           top: 0;
           left: 0;
           width: 100vw;
           height: 100vh;
-
           background-color: yellow;
           font-size: 2rem;
           border-radius: 10px;
           z-index: 9999;
           text-align: center;
         }
+
+        .spotDot::after {
+          font-size: 2rem;
+          top: 0px;
+          right: 5px;
+        }
       }
     </style>
 
     <script>
-      var px = 10; // Position x and y
+      var px = 10;
       var py = 10;
-      var vx = 0.0; // Velocity x and y
+      var vx = 0.0;
       var vy = 0.0;
-      var updateRate = 1 / 60; // Sensor refresh rate
+      var updateRate = 1 / 60;
 
       function getAccel() {
+        // ✅ User Agent를 이용해 모바일 기기인지 먼저 확인합니다.
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        // ✅ 만약 모바일이 아니라면, 사용자에게 알리고 함수 실행을 중단합니다.
+        if (!isMobile) {
+          alert("이 기능은 모바일 기기에서만 사용 가능합니다.");
+          return;
+        }
+
+        // --- 여기부터는 모바일 기기에서만 실행됩니다 ---
         DeviceMotionEvent.requestPermission().then((response) => {
           if (response == "granted") {
+            document.getElementById("accelPermsButton").style.display = "none";
+
             const dot = document.getElementsByClassName("indicatorDot")[0];
             const spot = document.getElementsByClassName("spotDot")[0];
 
             window.addEventListener("deviceorientation", (event) => {
-              const rotation_degrees = event.alpha;
-              const frontToBack_degrees = event.beta;
               const leftToRight_degrees = event.gamma;
+              const frontToBack_degrees = event.beta;
 
               vx = vx + leftToRight_degrees * updateRate * 2;
               vy = vy + frontToBack_degrees * updateRate;
@@ -228,7 +229,7 @@
       }
     </script>
   </head>
-  <body style="/* ✨ 인라인 스타일 제거 */">
+  <body>
     <div class="mobile-only-warning">
       📱<br /><br />
       모바일 환경을 이용해주세요 <br /><br />

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Direction-5</title>
+    <title>Direction-5 with Eyes</title>
     <link
       rel="stylesheet"
       as="style"
@@ -11,23 +11,125 @@
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
     />
     <style>
-      body {
-        padding: 5%;
+      /* --- 기본 스타일 --- */
+      body,
+      html {
         margin: 0;
-        height: 100vh;
-        font-family: "Apple SD Gothic Neo", sans-serif;
-        font-weight: 300;
-        font-size: 6vw;
-        line-height: 140%;
-        align-items: center;
-        /* ✨ 1. 배경색과 글자색 변경 */
+        padding: 0;
+        width: 100%;
+        height: 100%;
+
         background-color: #1c1c1c;
         color: #dcdcdc;
+        overflow: hidden;
+        /* ✅ 폰트 스타일 변경 */
+        font-family: "Apple SD Gothic Neo", sans-serif;
       }
 
-      /* ✨ 2. 다음 버튼 스타일 추가 */
+      .container {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #1c1c1c;
+        color: #dcdcdc;
+        overflow: hidden;
+        /* ✅ 폰트 스타일 변경 */
+        font-family: "Apple SD Gothic Neo", sans-serif;
+      }
+      /* --- 얼굴 애니메이션 스타일 --- */
+      .face {
+        width: 300px;
+        height: 400px;
+        background-color: #d3d3d3;
+        border-radius: 50%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .eye-container {
+        display: flex;
+        justify-content: space-between;
+        width: 200px;
+      }
+
+      .eye {
+        width: 80px;
+        height: 40px;
+        background-color: white;
+        border-radius: 50%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .pupil {
+        width: 30px;
+        height: 30px;
+        background-color: black;
+        border-radius: 50%;
+        position: absolute;
+        top: calc(50% - 15px);
+        left: calc(50% - 15px);
+        transition: transform 0.1s linear;
+      }
+
+      .eyelid-container {
+        position: absolute;
+        width: 200px;
+        display: flex;
+        justify-content: space-between;
+        top: 135px;
+        transition: top 0.3s ease-in-out;
+      }
+
+      .red-eyelid {
+        width: 80px;
+        height: 40px;
+        background-color: #ff4136;
+        border-radius: 50%;
+      }
+
+      .face.is-tilted-up .eyelid-container {
+        top: 180px;
+      }
+
+      #permission-button {
+        display: block;
+        left: 38%;
+        top: 60%;
+        /* padding: 1rem 2rem; */
+        font-size: 1.5rem;
+        cursor: pointer;
+        border-radius: 10px;
+        border: 2px solid #333;
+        background-color: white;
+        position: absolute;
+        z-index: 10;
+      }
+
+      /* --- 기존 Direction-5 콘텐츠 스타일 --- */
+      .text-content {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        text-align: left;
+        font-weight: 300;
+        line-height: 140%;
+        padding: 5%;
+        box-sizing: border-box;
+        /* ✅ 폰트 크기 변경 */
+        font-size: 6vw;
+      }
+
       .next-button {
-        display: block; /* 항상 보이도록 설정 */
+        display: block;
         position: fixed;
         bottom: 8%;
         right: 5%;
@@ -46,16 +148,85 @@
       }
 
       .next-button:hover {
-        background: #1c1c1c;
         color: #ffffff;
       }
     </style>
   </head>
   <body>
-    자신이 좋아하는 향을 <br />
-    들이마신다고 상상하면서 <br />
-    머리는 가볍게 떠오릅니다.
+    <button id="permission-button">시작하기</button>
+
+    <div class="container">
+      <div class="face">
+        <div class="eye-container">
+          <div class="eye">
+            <div class="pupil"></div>
+          </div>
+          <div class="eye">
+            <div class="pupil"></div>
+          </div>
+        </div>
+        <div class="eyelid-container">
+          <div class="red-eyelid"></div>
+          <div class="red-eyelid"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-content">
+      자신이 좋아하는 향을 <br />
+      들이마신다고 상상하면서 <br />
+      머리는 가볍게 떠오릅니다.
+    </div>
 
     <a href="main.html" class="next-button" aria-label="다음으로 이동">›</a>
+
+    <script>
+      const permissionButton = document.getElementById("permission-button");
+      const pupils = document.querySelectorAll(".pupil");
+      const face = document.querySelector(".face");
+
+      permissionButton.addEventListener("click", () => {
+        if (typeof DeviceOrientationEvent.requestPermission === "function") {
+          DeviceOrientationEvent.requestPermission()
+            .then((permissionState) => {
+              if (permissionState === "granted") {
+                startAnimation();
+              } else {
+                alert("기울기 센서 사용 권한이 거부되었습니다.");
+              }
+            })
+            .catch(console.error);
+        } else {
+          startAnimation();
+        }
+      });
+
+      function startAnimation() {
+        permissionButton.style.display = "none";
+        window.addEventListener("deviceorientation", handleOrientation);
+      }
+
+      function handleOrientation(event) {
+        let { beta, gamma } = event;
+
+        // 눈동자 움직임
+        const moveXMax = 25;
+        const moveYMax = 5;
+        let x = (gamma / 90) * moveXMax;
+        let y = ((beta - 45) / 90) * moveYMax;
+        x = Math.max(-moveXMax, Math.min(moveXMax, x));
+        y = Math.max(-moveYMax, Math.min(moveYMax, y));
+        pupils.forEach((pupil) => {
+          pupil.style.transform = `translate(${x}px, ${y}px)`;
+        });
+
+        // 눈꺼풀 제어
+        if (beta < 25) {
+          face.classList.add("is-tilted-up");
+        } else {
+          face.classList.remove("is-tilted-up");
+        }
+      }
+    </script>
   </body>
 </html>

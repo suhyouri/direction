@@ -43,7 +43,7 @@
         background-color: white;
         border-radius: 50%;
         position: relative;
-        overflow: hidden; /* 눈동자가 밖으로 나가지 않도록 */
+        overflow: hidden;
       }
 
       .pupil {
@@ -52,10 +52,33 @@
         background-color: black;
         border-radius: 50%;
         position: absolute;
-        /* 초기 위치를 중앙으로 설정 (calc로 보정) */
         top: calc(50% - 15px);
         left: calc(50% - 15px);
-        transition: transform 0.1s linear; /* 부드러운 움직임 */
+        transition: transform 0.1s linear;
+      }
+
+      /* ✅ 1. 빨간 눈꺼풀 스타일 추가 */
+      .eyelid-container {
+        /* 눈 위치와 수평 정렬을 맞추기 위한 컨테이너 */
+        position: absolute;
+        width: 200px;
+        display: flex;
+        justify-content: space-between;
+        /* 초기 위치: 눈 위 */
+        top: 135px;
+        transition: top 0.3s ease-in-out; /* 부드러운 이동 효과 */
+      }
+
+      .red-eyelid {
+        width: 80px;
+        height: 40px;
+        background-color: #ff4136; /* 빨간색 */
+        border-radius: 50%;
+      }
+
+      /* ✅ 3. 기울였을 때 눈꺼풀이 내려오는 상태 */
+      .face.is-tilted-up .eyelid-container {
+        top: 180px; /* 흰자 눈 위치로 이동 */
       }
 
       #permission-button {
@@ -82,15 +105,19 @@
           <div class="pupil"></div>
         </div>
       </div>
+
+      <div class="eyelid-container">
+        <div class="red-eyelid"></div>
+        <div class="red-eyelid"></div>
+      </div>
     </div>
 
     <script>
       const permissionButton = document.getElementById("permission-button");
       const pupils = document.querySelectorAll(".pupil");
+      const face = document.querySelector(".face"); // ✅ face 요소 선택
 
-      // 시작 버튼 클릭 이벤트
       permissionButton.addEventListener("click", () => {
-        // DeviceOrientationEvent에 대한 권한 요청 (주로 iOS 13+ 에서 필요)
         if (typeof DeviceOrientationEvent.requestPermission === "function") {
           DeviceOrientationEvent.requestPermission()
             .then((permissionState) => {
@@ -102,45 +129,36 @@
             })
             .catch(console.error);
         } else {
-          // 안드로이드 등 권한 요청이 필요 없는 경우
           startAnimation();
         }
       });
 
       function startAnimation() {
-        // 버튼 숨기기
         permissionButton.style.display = "none";
-
-        // 디바이스 기울기 이벤트 리스너 추가
         window.addEventListener("deviceorientation", handleOrientation);
       }
 
       function handleOrientation(event) {
-        // beta: 앞뒤 기울기 (-180 ~ 180)
-        // gamma: 좌우 기울기 (-90 ~ 90)
         let { beta, gamma } = event;
 
-        // 눈동자의 최대 이동 범위 (px)
+        // 눈동자 움직임 (기존과 동일)
         const moveXMax = 25;
         const moveYMax = 5;
-
-        // 좌우 기울기(gamma)를 X축 이동 값으로 변환
-        // -90(왼쪽) ~ 90(오른쪽) 범위를 -moveXMax ~ moveXMax 범위로 매핑
         let x = (gamma / 90) * moveXMax;
-
-        // 앞뒤 기울기(beta)를 Y축 이동 값으로 변환
-        // 0(수평) ~ 180(수직) 범위를 -moveYMax ~ moveYMax 범위로 매핑
-        // 사용자가 편하게 정면을 볼 때를 기준으로 삼기 위해 beta 값에서 45도 정도를 빼줍니다.
         let y = ((beta - 45) / 90) * moveYMax;
-
-        // 이동 범위를 제한하여 눈동자가 눈 밖으로 심하게 나가지 않도록 함
         x = Math.max(-moveXMax, Math.min(moveXMax, x));
         y = Math.max(-moveYMax, Math.min(moveYMax, y));
-
-        // 모든 눈동자에 동일한 변환 적용
         pupils.forEach((pupil) => {
           pupil.style.transform = `translate(${x}px, ${y}px)`;
         });
+
+        // ✅ 4. 기울기에 따라 눈꺼풀 제어
+        // beta 값이 25도보다 작아지면 (핸드폰을 위로 기울이면) 눈을 감음
+        if (beta < 25) {
+          face.classList.add("is-tilted-up");
+        } else {
+          face.classList.remove("is-tilted-up");
+        }
       }
     </script>
   </body>
