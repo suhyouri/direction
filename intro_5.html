@@ -103,6 +103,25 @@
         border-radius: 50%;
       }
 
+      /* ✅ 헤어 스타일 추가 */
+      .hair {
+        position: absolute;
+        top: -20px; /* 얼굴 내에서의 수직 위치 */
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 5px; /* 머리카락 사이 간격 */
+        z-index: 4; /* 다른 눈 요소들 위에 오도록 설정 */
+      }
+
+      .hair-circle {
+        width: 120px;
+        height: 120px;
+        background: #1c1c1c; /* 배경과 같은 어두운 색 */
+        border-radius: 50%;
+        transform: rotate(-15deg); /* 살짝 기울이기 */
+      }
+
       .face.is-tilted-up .eye-container,
       .face.is-tilted-up .eyelid-container,
       .face.is-tilted-up .black-circle-container {
@@ -114,6 +133,8 @@
       }
 
       #permission-button {
+        display: block;
+        top: 58%;
         padding: 1rem 2rem;
         font-size: 1.5rem;
         cursor: pointer;
@@ -124,16 +145,15 @@
         z-index: 10;
       }
 
-      /* ✅ 텍스트 위치 및 정렬 스타일 수정 */
       .text-content {
         position: fixed;
-        top: 0; /* 상단에 위치 */
+        top: 0;
         left: 0;
         width: 100%;
-        text-align: left; /* 왼쪽 정렬 */
+        text-align: left;
         font-weight: 300;
         line-height: 140%;
-        padding: 5%; /* 상하좌우 패딩 */
+        padding: 5%;
         box-sizing: border-box;
         font-size: 6vw;
       }
@@ -181,6 +201,14 @@
       <div class="black-circle-container">
         <div class="black-circle"></div>
         <div class="black-circle"></div>
+      </div>
+
+      <div class="hair">
+        <div class="hair-circle"></div>
+        <div class="hair-circle"></div>
+        <div class="hair-circle"></div>
+        <div class="hair-circle"></div>
+        <div class="hair-circle"></div>
       </div>
     </div>
 
