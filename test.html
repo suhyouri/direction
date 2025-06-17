@@ -1,105 +1,147 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>스크래치 복권</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tilt-Controlled Eyes</title>
     <style>
-      body {
+      body,
+      html {
         margin: 0;
-        background: #f0f0f0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
-
-      .container {
-        position: relative;
-        width: 300px;
-        height: 200px;
-        border: 2px solid #aaa;
-      }
-
-      .hidden-layer {
-        position: absolute;
+        padding: 0;
         width: 100%;
         height: 100%;
-        background: white;
-        color: black;
-        font-size: 24px;
-        font-weight: bold;
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 1;
+        background-color: #f0f0f0;
+        overflow: hidden;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
       }
 
-      canvas {
+      .face {
+        width: 300px;
+        height: 400px;
+        background-color: #d3d3d3; /* 연한 회색 */
+        border-radius: 50%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .eye-container {
+        display: flex;
+        justify-content: space-between;
+        width: 200px;
+      }
+
+      .eye {
+        width: 80px;
+        height: 40px;
+        background-color: white;
+        border-radius: 50%;
+        position: relative;
+        overflow: hidden; /* 눈동자가 밖으로 나가지 않도록 */
+      }
+
+      .pupil {
+        width: 30px;
+        height: 30px;
+        background-color: black;
+        border-radius: 50%;
         position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 2;
+        /* 초기 위치를 중앙으로 설정 (calc로 보정) */
+        top: calc(50% - 15px);
+        left: calc(50% - 15px);
+        transition: transform 0.1s linear; /* 부드러운 움직임 */
+      }
+
+      #permission-button {
+        padding: 1rem 2rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        border-radius: 10px;
+        border: 2px solid #333;
+        background-color: white;
+        position: absolute;
+        z-index: 10;
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="hidden-layer">🎉 You Win! 🎉</div>
-      <canvas id="scratchCanvas"></canvas>
+    <button id="permission-button">시작하기</button>
+
+    <div class="face">
+      <div class="eye-container">
+        <div class="eye">
+          <div class="pupil"></div>
+        </div>
+        <div class="eye">
+          <div class="pupil"></div>
+        </div>
+      </div>
     </div>
 
     <script>
-      const canvas = document.getElementById("scratchCanvas");
-      const ctx = canvas.getContext("2d");
-      const container = document.querySelector(".container");
+      const permissionButton = document.getElementById("permission-button");
+      const pupils = document.querySelectorAll(".pupil");
 
-      canvas.width = container.offsetWidth;
-      canvas.height = container.offsetHeight;
-
-      // 은색 표면 그리기
-      ctx.fillStyle = "#C0C0C0"; // 은색
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      let isDrawing = false;
-
-      function getPosition(e) {
-        const rect = canvas.getBoundingClientRect();
-        if (e.touches) {
-          return {
-            x: e.touches[0].clientX - rect.left,
-            y: e.touches[0].clientY - rect.top,
-          };
+      // 시작 버튼 클릭 이벤트
+      permissionButton.addEventListener("click", () => {
+        // DeviceOrientationEvent에 대한 권한 요청 (주로 iOS 13+ 에서 필요)
+        if (typeof DeviceOrientationEvent.requestPermission === "function") {
+          DeviceOrientationEvent.requestPermission()
+            .then((permissionState) => {
+              if (permissionState === "granted") {
+                startAnimation();
+              } else {
+                alert("기울기 센서 사용 권한이 거부되었습니다.");
+              }
+            })
+            .catch(console.error);
         } else {
-          return {
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top,
-          };
+          // 안드로이드 등 권한 요청이 필요 없는 경우
+          startAnimation();
         }
+      });
+
+      function startAnimation() {
+        // 버튼 숨기기
+        permissionButton.style.display = "none";
+
+        // 디바이스 기울기 이벤트 리스너 추가
+        window.addEventListener("deviceorientation", handleOrientation);
       }
 
-      function draw(e) {
-        if (!isDrawing) return;
+      function handleOrientation(event) {
+        // beta: 앞뒤 기울기 (-180 ~ 180)
+        // gamma: 좌우 기울기 (-90 ~ 90)
+        let { beta, gamma } = event;
 
-        const { x, y } = getPosition(e);
-        ctx.globalCompositeOperation = "destination-out"; // 투명하게 지움
-        ctx.beginPath();
-        ctx.arc(x, y, 15, 0, Math.PI * 2); // 30px 원
-        ctx.fill();
+        // 눈동자의 최대 이동 범위 (px)
+        const moveXMax = 25;
+        const moveYMax = 5;
+
+        // 좌우 기울기(gamma)를 X축 이동 값으로 변환
+        // -90(왼쪽) ~ 90(오른쪽) 범위를 -moveXMax ~ moveXMax 범위로 매핑
+        let x = (gamma / 90) * moveXMax;
+
+        // 앞뒤 기울기(beta)를 Y축 이동 값으로 변환
+        // 0(수평) ~ 180(수직) 범위를 -moveYMax ~ moveYMax 범위로 매핑
+        // 사용자가 편하게 정면을 볼 때를 기준으로 삼기 위해 beta 값에서 45도 정도를 빼줍니다.
+        let y = ((beta - 45) / 90) * moveYMax;
+
+        // 이동 범위를 제한하여 눈동자가 눈 밖으로 심하게 나가지 않도록 함
+        x = Math.max(-moveXMax, Math.min(moveXMax, x));
+        y = Math.max(-moveYMax, Math.min(moveYMax, y));
+
+        // 모든 눈동자에 동일한 변환 적용
+        pupils.forEach((pupil) => {
+          pupil.style.transform = `translate(${x}px, ${y}px)`;
+        });
       }
-
-      canvas.addEventListener("mousedown", () => (isDrawing = true));
-      canvas.addEventListener("mouseup", () => (isDrawing = false));
-      canvas.addEventListener("mousemove", draw);
-
-      canvas.addEventListener("touchstart", (e) => {
-        isDrawing = true;
-        draw(e);
-      });
-      canvas.addEventListener("touchend", () => (isDrawing = false));
-      canvas.addEventListener("touchmove", (e) => {
-        e.preventDefault(); // 스크롤 방지
-        draw(e);
-      });
     </script>
   </body>
 </html>
